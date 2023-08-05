@@ -1,4 +1,7 @@
 package com.example.finalproject_phase2.repository;
 
-public interface WalletRepository {
+import com.example.finalproject_phase2.entity.Wallet;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface WalletRepository extends JpaRepository<Wallet,Long> {
 }
