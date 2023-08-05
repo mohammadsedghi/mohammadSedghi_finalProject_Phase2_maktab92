@@ -1,4 +1,4 @@
-package com.example.finalproject_phase2;
+package com.example.finalproject_phase2.base;
 
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
