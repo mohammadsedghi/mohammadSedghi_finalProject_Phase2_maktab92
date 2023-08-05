@@ -1,4 +1,16 @@
 package com.example.finalproject_phase2.entity;
 
-public class Admin {
+import jakarta.persistence.Entity;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+@Setter
+@Getter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class Admin extends Person {
 }
