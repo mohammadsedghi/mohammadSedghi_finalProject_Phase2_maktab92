@@ -6,10 +6,11 @@ import com.example.finalproject_phase2.entity.SubDuty;
 import com.example.finalproject_phase2.entity.enumeration.OrderStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.Optional;
-
+@Repository
 public interface OrdersRepository extends JpaRepository<Orders,Long> {
     @Query("select o from Orders o where o.subDuty = :subDuty and (o.orderStatus = :orderStatusWaitingForSuggest or o.orderStatus = :orderStatusWaitingForSelect)")
     Collection<Orders> showOrdersToSpecialist(SubDuty subDuty );
