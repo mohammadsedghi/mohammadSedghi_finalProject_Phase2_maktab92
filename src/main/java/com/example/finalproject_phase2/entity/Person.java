@@ -2,6 +2,7 @@ package com.example.finalproject_phase2.entity;
 
 import com.example.finalproject_phase2.base.BaseEntity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.MappedSuperclass;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
@@ -16,12 +17,11 @@ import java.time.LocalTime;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Builder
+@MappedSuperclass
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Person extends BaseEntity<Long> {
      String firstName;
-   String lastname;
+   String lastName;
    String nationalId;
    String email;
     String password;
