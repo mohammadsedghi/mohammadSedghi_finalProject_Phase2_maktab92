@@ -2,6 +2,7 @@ package com.example.finalproject_phase2.service.impl;
 
 import com.example.finalproject_phase2.dto.ProjectResponse;
 import com.example.finalproject_phase2.dto.addressDto.AddressDto;
+import com.example.finalproject_phase2.dto.adminDto.AdminLoginDto;
 import com.example.finalproject_phase2.dto.customerDto.CustomerChangePasswordDto;
 import com.example.finalproject_phase2.dto.customerDto.CustomerLoginDto;
 import com.example.finalproject_phase2.dto.customerDto.CustomerSignUpDto;
@@ -21,6 +22,7 @@ import java.util.Set;
 public class MotherObject {
     String invalidEmail="mohammadgmail.com";
     String duplicateEmail="mahan@gmail.com";
+    String adminValidPassword="123456ad";
     ProjectResponse projectResponseOfAddressRemoved=new ProjectResponse("202","address removed");
     public CustomerSignUpDto getValidCustomerSignUpDto(){
         return CustomerSignUpDto.builder()
@@ -44,6 +46,12 @@ public class MotherObject {
         return CustomerLoginDto.builder()
                 .email("mahan@gmail.com")
                 .password("123456mn")
+                .build();
+    }
+    public AdminLoginDto getValidAdminLoginDto(){
+        return AdminLoginDto.builder()
+                .email("mohammadsedghi1993@gmail.com")
+                .password("123456ad")
                 .build();
     }
     public CustomerLoginDto getValidCustomerLoginDtoAfterChangePassword(){
