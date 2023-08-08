@@ -26,37 +26,16 @@ public class CustomerController {
     @PostMapping("/signUpCustomer")
     public ResponseEntity<ProjectResponse> AddCustomer(@RequestBody CustomerSignUpDto customerSignUpDto) {
 
-        ProjectResponse projectResponse = customerService.addCustomer(customerSignUpDto);
-        if (projectResponse.getCode().equals("200")) {
-            return new ResponseEntity<>(projectResponse, HttpStatus.ACCEPTED);
-        }
-        if (projectResponse.getCode().equals("500")) {
-            return new ResponseEntity<>(projectResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return new ResponseEntity<>(projectResponse, HttpStatus.SERVICE_UNAVAILABLE);
+        return ProjectResponse.getResponseEntity(customerService.addCustomer(customerSignUpDto));
 
     }
-
     @PostMapping("/loginCustomer")
     public ResponseEntity<ProjectResponse> loginByEmailAndPassword(@RequestBody CustomerLoginDto customerLoginDto) {
-        ProjectResponse projectResponse = customerService.loginByEmailAndPassword(customerLoginDto);
-        if (projectResponse.getCode().equals("200")) {
-            return new ResponseEntity<>(projectResponse, HttpStatus.ACCEPTED);
-        }
-        if (projectResponse.getCode().equals("500")) {
-            return new ResponseEntity<>(projectResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return new ResponseEntity<>(projectResponse, HttpStatus.SERVICE_UNAVAILABLE);
+        return ProjectResponse.getResponseEntity(customerService.loginByEmailAndPassword(customerLoginDto));
     }
     @PostMapping("/changePasswordCustomer")
     public ResponseEntity<ProjectResponse> changePassword(@RequestBody CustomerChangePasswordDto customerChangePasswordDto) {
-        ProjectResponse projectResponse = customerService.changePassword(customerChangePasswordDto);
-        if (projectResponse.getCode().equals("200")) {
-            return new ResponseEntity<>(projectResponse, HttpStatus.ACCEPTED);
-        }
-        if (projectResponse.getCode().equals("500")) {
-            return new ResponseEntity<>(projectResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return new ResponseEntity<>(projectResponse, HttpStatus.SERVICE_UNAVAILABLE);
+        return ProjectResponse.getResponseEntity(customerService.changePassword(customerChangePasswordDto));
+
     }
 }

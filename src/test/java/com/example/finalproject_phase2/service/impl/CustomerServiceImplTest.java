@@ -1,73 +1,89 @@
 package com.example.finalproject_phase2.service.impl;
 
+import com.example.finalproject_phase2.custom_exception.CustomException;
+import com.example.finalproject_phase2.dto.customerDto.CustomerChangePasswordDto;
+import com.example.finalproject_phase2.dto.customerDto.CustomerLoginDto;
 import com.example.finalproject_phase2.dto.customerDto.CustomerSignUpDto;
 import com.example.finalproject_phase2.dto.ProjectResponse;
 import com.example.finalproject_phase2.repository.CustomerRepository;
 import com.example.finalproject_phase2.service.CustomerService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.example.finalproject_phase2.util.CheckValidation;
+import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-//@DataJpaTest
-//@ActiveProfiles("test")
+@SpringBootTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class CustomerServiceImplTest {
-    @InjectMocks
+
+    @Autowired
     CustomerService customerService;
-    //   @InjectMocks
-//    WalletService walletService;
-    @Mock
-    ProjectResponse projectResponse;
-    @Mock
     CustomerSignUpDto customerSignUpDto;
-    @Mock
+    MotherObject motherObject;
     CustomerRepository customerRepository;
-//    @Mock
-//    CustomerSignUpDto customerSignUpDto;
-    //@InjectMocks
-//    ProjectResponse projectResponse = new ProjectResponse();
-//    @InjectMocks
-//    Customer customer;
-//    private CustomerRepository repository;
+    CustomerLoginDto customerLoginDto;
+    CustomerChangePasswordDto customerChangePasswordDto;
 
-//@Mock
-    // private CustomerRepository customerRepository;
-
-    //private CustomerService customerService;
-
-    // private WalletService walletService;
     @BeforeEach
     void setUp() {
-        customerService = Mockito.mock(CustomerServiceImpl.class);
-       projectResponse = Mockito.mock(ProjectResponse.class);
-       customerSignUpDto = Mockito.mock(CustomerSignUpDto.class);
-       MockitoAnnotations.openMocks(this);
+        motherObject = new MotherObject();
+        customerSignUpDto = new CustomerSignUpDto();
+        customerLoginDto = new CustomerLoginDto();
+        customerChangePasswordDto = new CustomerChangePasswordDto();
     }
 
     @Test
+    @Order(1)
     void findByEmail() {
+        // assertEquals(throw new CustomException("transaction error"),customerService.findByEmail(motherObject.getDuplicateEmail());
+        assertTrue(customerService.findByEmail(motherObject.getDuplicateEmail()).isPresent());
+
+
     }
 
     @Test
+    @Order(2)
     void addCustomer() {
-        customerSignUpDto.setFirstName("mahan");
-        customerSignUpDto.setLastName("se");
-        customerSignUpDto.setNationalId("4560116814");
-        customerSignUpDto.setEmail("mahan@gmail.com");
-        customerSignUpDto.setPassword("123456mn");
-        Mockito.when(customerService.addCustomer(customerSignUpDto)).thenReturn(projectResponse);
-        Mockito.when(customerService.addCustomer(customerSignUpDto)).thenReturn(projectResponse);
-        assertEquals(projectResponse, customerService.addCustomer(customerSignUpDto));
-
+        assertEquals("202", customerService.addCustomer(motherObject.getValidCustomerSignUpDto()).getCode());
     }
 
-    //        assertEquals("200", customerService.addCustomer(customerSignUpDto).getCode());
     @Test
+    @Order(3)
+    void addCustomerInvalidInput() {
+        assertEquals("500", customerService.addCustomer(motherObject.getInValidCustomerSignUpDto()).getCode());
+    }
+
+    @Test
+    @Order(4)
+    void customerLoginByEmailAndPasswordTest() {
+        assertEquals("202", customerService.loginByEmailAndPassword(motherObject.getValidCustomerLoginDto()).getCode());
+    }
+
+    @Test
+    @Order(5)
+    void customerLoginByInvalidEmailAndInvalidPasswordTest() {
+        assertEquals("500", customerService.loginByEmailAndPassword(motherObject.getInValidCustomerLoginDto()).getCode());
+    }
+
+    @Test
+    @Order(6)
     void encryptCustomerPassword() {
+        String hashPassword = "on0EK9kqkdhgaJdWgoJb4q34+hBF2c/hkzlRtljOIKoxXS+YoQwb0fxEp9WxAbAvPXqsOJKddFvzxFUQRbrxFQ==";
+        assertEquals(hashPassword, customerService.encryptCustomerPassword(customerSignUpDto.getPassword()));
+    }
+
+    @Test
+    @Order(7)
+    void changePasswordTest() {
+        customerService.changePassword(motherObject.getValidCustomerChangePasswordDto());
+        customerService.loginByEmailAndPassword(motherObject.getValidCustomerLoginDtoAfterChangePassword());
+        assertEquals(motherObject.getDuplicateEmail(),CheckValidation.memberTypeCustomer.getEmail());
     }
 }

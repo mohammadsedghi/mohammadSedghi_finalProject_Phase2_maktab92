@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Repository
 public interface DutyRepository extends JpaRepository<Duty,Long> {
-//    @Query("select d from Duty d ")
+    @Query("select d from Duty d")
    Collection<Duty> findAllByDuties();
 //    Collection<Duty>
 }

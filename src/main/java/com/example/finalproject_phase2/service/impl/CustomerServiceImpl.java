@@ -33,7 +33,7 @@ public class CustomerServiceImpl implements CustomerService {
         this.walletService = walletService;
     }
 
-
+@Override
     public Optional<Customer> findByEmail(String email) {
         try {
             return customerRepository.findByEmail(email);
@@ -56,11 +56,10 @@ public class CustomerServiceImpl implements CustomerService {
                         customer.setPassword(encryptCustomerPassword(customer.getPassword()));
                         customer.setRegisterDate(LocalDate.now());
                         customer.setRegisterTime(LocalTime.now());
-//                          Wallet wallet=new Wallet(0d);
                         customer.setWallet(walletService.createWallet());
                         customerRepository.save(customer);
                     });
-            return new ProjectResponse("201", "customer saved(created)");
+            return new ProjectResponse("202", "customer saved(created)");
         } catch (CustomException c) {
             return new ProjectResponse("500", c.getMessage());
         }
