@@ -13,6 +13,15 @@ public class DutyMapper {
                 .subDuties(dutyDto.getSubDuties())
                 .build();
     }
+    public static DutyDto dutyToDutyDto(Duty duty) {
+        return DutyDto.builder()
+                .name(duty.getName())
+                .subDuties(duty.getSubDuties())
+                .build();
+    }
+    public static DutyDto dutyToDutyDtop(Duty duty) {
+       return new DutyDto(duty.getName(),duty.getSubDuties());
+    }
 
     public static Set<DutyDto> collectionOfDutyToSetOfDuty(Collection<Duty> duties) {
         DutyDto dutyDto=new DutyDto();

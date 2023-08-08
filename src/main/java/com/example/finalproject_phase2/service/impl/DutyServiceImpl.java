@@ -50,4 +50,9 @@ public class DutyServiceImpl implements DutyService {
     public Set<DutyDto> findAllByDuties() {
         return DutyMapper.collectionOfDutyToSetOfDuty(dutyRepository.findAllByDuties());
     }
+
+    @Override
+    public Duty findByName(String name) {
+        return dutyRepository.findByName(name);
+    }
 }

@@ -32,4 +32,8 @@ class DutyServiceImplTest {
     void findAllByDuties() {
       assertEquals(motherObject.setOfDuty(),dutyService.findAllByDuties());
     }
+    @Test
+    void findDutyByName() {
+        assertEquals("AAA",dutyService.findByName("AAA").getName());
+    }
 }

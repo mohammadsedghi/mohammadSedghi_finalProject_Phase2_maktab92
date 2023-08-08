@@ -10,4 +10,5 @@ import java.util.Set;
 public interface DutyService {
     ProjectResponse addDuty(DutyDto dutyDto);
     Set<DutyDto> findAllByDuties();
+    Duty findByName(String name);
 }

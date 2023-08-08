@@ -14,5 +14,6 @@ public interface SubDutyRepository extends JpaRepository<SubDuty,Long> {
     Collection<SubDuty> showSubDutyOfDuty(Duty duty);
     @Query("select sd from SubDuty sd where sd.name=:name ")
     Optional<SubDuty> isExistSubDuty(String name);
+    Optional<SubDuty> findByName(String name);
 
 }

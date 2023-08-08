@@ -7,6 +7,8 @@ import com.example.finalproject_phase2.dto.customerDto.CustomerChangePasswordDto
 import com.example.finalproject_phase2.dto.customerDto.CustomerLoginDto;
 import com.example.finalproject_phase2.dto.customerDto.CustomerSignUpDto;
 import com.example.finalproject_phase2.dto.dutyDto.DutyDto;
+import com.example.finalproject_phase2.dto.subDutyDto.EditSubDutyDto;
+import com.example.finalproject_phase2.dto.subDutyDto.SubDutyDto;
 import com.example.finalproject_phase2.entity.Duty;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -95,5 +97,21 @@ public class MotherObject {
                                 .postalCode("3514734473")
                                         .houseNumber(32)
                 .build();
+    }
+    public SubDutyDto getValidSubDutyDto(){
+        Duty duty=new Duty("AAA",new HashSet<>());
+        duty.setId(1l);
+        return SubDutyDto.builder()
+                .duty(duty)
+                .basePrice(12d)
+                .description("ABC")
+                .name("AB")
+                .build();
+    }
+    public EditSubDutyDto getValidEditSubDutyInfo(SubDutyDto subDutyDto){
+        return EditSubDutyDto.builder().
+                subDuty(subDutyDto)
+              .basePrice("500").
+                build();
     }
 }

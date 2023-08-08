@@ -12,5 +12,5 @@ import java.util.Set;
 public interface DutyRepository extends JpaRepository<Duty,Long> {
     @Query("select d from Duty d")
    Collection<Duty> findAllByDuties();
-//    Collection<Duty>
+Duty findByName(String name);
 }
