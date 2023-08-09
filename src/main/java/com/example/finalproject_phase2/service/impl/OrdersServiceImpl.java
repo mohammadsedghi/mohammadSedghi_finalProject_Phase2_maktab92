@@ -1,6 +1,8 @@
 package com.example.finalproject_phase2.service.impl;
 
+import com.example.finalproject_phase2.custom_exception.CustomDuplicateInfoException;
 import com.example.finalproject_phase2.custom_exception.CustomException;
+import com.example.finalproject_phase2.custom_exception.CustomNoResultException;
 import com.example.finalproject_phase2.dto.ProjectResponse;
 import com.example.finalproject_phase2.entity.Customer;
 import com.example.finalproject_phase2.entity.Orders;
@@ -14,7 +16,7 @@ import org.hibernate.TransactionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
+import java.util.*;
 
 @Service
 public class OrdersServiceImpl implements OrdersService {
@@ -54,41 +56,72 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Override
     public Orders updateOrderToNextLevel(Orders orders, OrderStatus orderStatus) {
-        return null;
+        orders.setOrderStatus(orderStatus);
+        ordersRepository.save(orders);
+        return orders;
     }
-
     @Override
-    public void findOrdersWithThisCustomerAndSubDuty(Customer customer, SubDuty subDuty) {
+    public ProjectResponse findOrdersWithThisCustomerAndSubDuty(Customer customer, SubDuty subDuty) {
+        try {ordersRepository.findOrdersWithThisCustomerAndSubDuty(customer, subDuty,OrderStatus.ORDER_DONE).ifPresent(
+                orders -> {
+                        throw new CustomDuplicateInfoException("this customer submit order for this subDuty");
+                    });
+
+                }catch (CustomDuplicateInfoException cdi) {
+            return new ProjectResponse("500",cdi.getMessage());
+        }
+        return new ProjectResponse("202","find Orders With This Customer And SubDuty");
 
     }
 
     @Override
     public Collection<Orders> findOrdersInStatusWaitingForSpecialistSuggestion(Customer customer) {
-        return null;
+        return (ordersRepository.findOrdersInStatusWaitingForSpecialistSuggestion(customer,
+                OrderStatus.ORDER_WAITING_FOR_SPECIALIST_SUGGESTION));
+//        try {
+//            if (customOrderSet.size() == 0) {
+//                throw new CustomNoResultException("no order exist with this request");
+//            }
+//
+//        } catch (CustomNoResultException cnr) {
+//            System.out.println(cnr.getMessage());
+//        }
+        //return customOrderSet;
+
     }
 
     @Override
     public Collection<Orders> findOrdersInStatusWaitingForSpecialistSelection(Customer customer) {
-        return null;
+         return (ordersRepository.findOrdersInStatusWaitingForSpecialistSuggestion(customer,
+                OrderStatus.ORDER_WAITING_FOR_SPECIALIST_SELECTION));
     }
 
     @Override
     public Collection<Orders> findOrdersInStatusWaitingForSpecialistToWorkplace(Customer customer) {
-        return null;
+        return (ordersRepository.findOrdersInStatusWaitingForSpecialistSuggestion(customer,
+                OrderStatus.ORDER_WAITING_FOR_SPECIALIST_TO_WORKPLACE));
     }
 
     @Override
     public Collection<Orders> findOrdersInStatusStarted(Customer customer) {
-        return null;
+        return (ordersRepository.findOrdersInStatusWaitingForSpecialistSuggestion(customer,
+                OrderStatus.ORDER_STARTED));
     }
 
     @Override
     public Collection<Orders> findOrdersInStatusPaid(Customer customer) {
-        return null;
+        return (ordersRepository.findOrdersInStatusWaitingForSpecialistSuggestion(customer,
+                OrderStatus.ORDER_PAID));
     }
 
     @Override
     public Collection<Orders> findOrdersInStatusDone(Customer customer) {
-        return null;
+        return (ordersRepository.findOrdersInStatusWaitingForSpecialistSuggestion(customer,
+                OrderStatus.ORDER_DONE));
+    }
+
+    @Override
+    public Optional<Orders> findById(Long id) {
+        return ordersRepository.findById(id);
     }
 }
