@@ -20,7 +20,7 @@ import java.util.Set;
 public class Specialist extends Person{
     @ManyToOne
     Duty duty;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "Specialist_SubDuties",
             joinColumns = @JoinColumn(name = "Specialist_ID", referencedColumnName = "id"),
@@ -32,19 +32,19 @@ public class Specialist extends Person{
     SpecialistRegisterStatus status;
     Integer score;
    @Column(name = "image_data", columnDefinition = "TEXT")
-//   @Lob
+ // @Lob
     String imageData;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Specialist that = (Specialist) o;
-        return status == that.status;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(status);
-    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Specialist that = (Specialist) o;
+//        return status == that.status;
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(status);
+//    }
 }

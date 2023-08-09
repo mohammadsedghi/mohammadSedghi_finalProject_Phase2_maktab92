@@ -96,7 +96,6 @@ public class SpecialistServiceImpl implements SpecialistService {
     public Boolean addSpecialistToSubDuty(Specialist specialist, SubDuty a) {
 
         Set<SubDuty> setOfSubDuty=specialist.getSubDuties();
-       // specialist.getSubDuties().forEach(subDuty ->!=a);
         specialist.getSubDuties().forEach(element -> {
             if (! specialist.getSubDuties().contains(a)) {
                 specialist.getSubDuties().add(a);

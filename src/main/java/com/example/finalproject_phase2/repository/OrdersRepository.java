@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface OrdersRepository extends JpaRepository<Orders,Long> {
     @Query("select o from Orders o where o.subDuty = :subDuty and (o.orderStatus = :orderStatusWaitingForSuggest or o.orderStatus = :orderStatusWaitingForSelect)")
-    Collection<Orders> showOrdersToSpecialist(SubDuty subDuty );
+    Collection<Orders> showOrdersToSpecialist(SubDuty subDuty,OrderStatus orderStatusWaitingForSuggest,OrderStatus orderStatusWaitingForSelect );
     @Query("select o from Orders o where o.customer=:customer and o.subDuty=:subDuty and o.orderStatus !=:orderStatus")
     Optional<Orders> findOrdersWithThisCustomerAndSubDuty(Customer customer, SubDuty subDuty);
     @Query("select o from Orders o where o.customer=:customer and o.orderStatus =:orderStatus")
