@@ -26,6 +26,8 @@ public class MotherObject {
     String duplicateEmail="mahan@gmail.com";
     String adminValidPassword="123456ad";
     ProjectResponse projectResponseOfAddressRemoved=new ProjectResponse("202","address removed");
+
+
     public CustomerSignUpDto getValidCustomerSignUpDto(){
         return CustomerSignUpDto.builder()
                 .firstName("mahan")
@@ -77,7 +79,7 @@ public class MotherObject {
     }
     public DutyDto getValidDutyDto(){
         return DutyDto.builder()
-                .name("BBB")
+                .name("AAA")
                 .subDuties(new HashSet<>())
                 .build();
     }

@@ -2,6 +2,7 @@ package com.example.finalproject_phase2.entity;
 
 import com.example.finalproject_phase2.base.BaseEntity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -20,7 +21,7 @@ import java.util.Set;
 
 public class Duty extends BaseEntity<Long> {
     String name;
-    @OneToMany(mappedBy = "duty")
+    @OneToMany(mappedBy = "duty",fetch = FetchType.EAGER)
     Set<SubDuty> subDuties;
 
     @Override

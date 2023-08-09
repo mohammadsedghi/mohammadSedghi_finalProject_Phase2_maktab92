@@ -25,7 +25,7 @@ class DutyServiceImplTest {
 
     @Test
     void addDuty() {
-        assertEquals("202",dutyService.addDuty(motherObject.getValidDutyDto()));
+        assertEquals("202",dutyService.addDuty(motherObject.getValidDutyDto()).getCode());
     }
 
     @Test

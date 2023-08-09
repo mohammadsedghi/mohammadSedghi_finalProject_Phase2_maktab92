@@ -31,11 +31,11 @@ public class SubDuty extends BaseEntity<Long> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SubDuty subDuty = (SubDuty) o;
-        return Objects.equals(duty, subDuty.duty);
+        return Objects.equals(duty, subDuty.duty) && Objects.equals(name, subDuty.name) && Objects.equals(basePrice, subDuty.basePrice) && Objects.equals(description, subDuty.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(duty);
+        return Objects.hash(duty, name, basePrice, description);
     }
 }

@@ -6,11 +6,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Objects;
 import java.util.Set;
 
 @Setter
 @Getter
-@ToString
+//@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -30,5 +31,20 @@ public class Specialist extends Person{
     @Enumerated(EnumType.STRING)
     SpecialistRegisterStatus status;
     Integer score;
+   @Column(name = "image_data", columnDefinition = "TEXT")
+//   @Lob
     String imageData;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Specialist that = (Specialist) o;
+        return status == that.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(status);
+    }
 }
