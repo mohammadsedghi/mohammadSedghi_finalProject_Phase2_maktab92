@@ -67,10 +67,12 @@ class SpecialistServiceImplTest {
         String image = specialistService.convertImageToImageData("src/main/java/com/example/finalproject_phase2/util/images/300.jpg");
         Specialist specialist = new Specialist(duty1, subDutySet, wallet,
                 SpecialistRegisterStatus.WAITING_FOR_CONFIRM, 0, image);
-        specialist.setFirstName("ali");
+       // specialist.setFirstName("ali");
+        specialist.setFirstName("mohammad");
         specialist.setLastName("se");
         specialist.setNationalId("4560116814");
-        specialist.setEmail("ali@gmail.com");
+        //specialist.setEmail("ali@gmail.com");
+        specialist.setEmail("mohammad@gmail.com");
         specialist.setPassword("123456al");
         specialist.setRegisterDate(LocalDate.now());
         specialist.setRegisterTime(LocalTime.now());
