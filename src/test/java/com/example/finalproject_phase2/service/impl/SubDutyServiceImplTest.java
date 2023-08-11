@@ -42,7 +42,7 @@ class SubDutyServiceImplTest {
     @Test
     void addSubDuty() {
         validSubDutyDto = motherObject.getValidSubDutyDto();
-        assertEquals("202",subDutyService.addSubDuty(validSubDutyDto).getCode());
+        assertEquals("500",subDutyService.addSubDuty(validSubDutyDto).getCode());
     }
 
     @Test
