@@ -24,11 +24,11 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public ProjectResponse removeAddress(AddressDto addressDto) {
+    public ProjectResponse removeAddress(Address address) {
         try {
-            addressRepository.findAddressById(AddressMapper.addressDtoToAddress(addressDto)).ifPresentOrElse(
-                    address -> {
-                        addressRepository.delete(AddressMapper.addressDtoToAddress(addressDto));
+            addressRepository.findAddressById(address).ifPresentOrElse(
+                    addressCandidate -> {
+                        addressRepository.delete(address);
                     }
                     , () -> {
                         throw new CustomNoResultException("no any address found");
@@ -39,4 +39,10 @@ public class AddressServiceImpl implements AddressService {
         }
         return new ProjectResponse("202","address removed");
     }
+
+    @Override
+    public Address findById(Long id) {
+        return addressRepository.findById(id).get();
+    }
+
 }

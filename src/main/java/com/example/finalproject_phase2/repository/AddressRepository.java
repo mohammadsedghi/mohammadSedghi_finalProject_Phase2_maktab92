@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface AddressRepository extends JpaRepository<Address,Long> {
     @Query("select a from Address a where a=:address")
     Optional<Address> findAddressById(Address address);
+    Optional<Address> findById(Long id);
 }

@@ -19,6 +19,7 @@ public class AddressController {
     @PostMapping("/deleteAddress")
     public ResponseEntity<ProjectResponse> deleteAddress(@RequestBody AddressDto addressDto) {
 
-        return ProjectResponse.getResponseEntity(addressService.removeAddress(addressDto));
+//        return ProjectResponse.getResponseEntity(addressService.removeAddress(addressDto));
+        return null;
     }
 }

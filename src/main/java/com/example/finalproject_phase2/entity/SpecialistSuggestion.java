@@ -8,6 +8,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -28,11 +29,18 @@ public class SpecialistSuggestion extends BaseEntity<Long> {
     Specialist specialist;
     @ManyToOne
     Orders order;
+    @NotNull(message = "DateOfSuggestion must be have value")
     LocalDate DateOfSuggestion;
+    @NotNull(message = "TimeOfSuggestion must be have value")
     LocalTime TimeOfSuggestion;
+    @NotNull(message = "proposedPrice must be have value")
+     @Positive(message = "price must be positive")
     Double proposedPrice;
+    @NotNull(message = "TimeOfStartWork must be have value")
     LocalTime TimeOfStartWork;
+    @NotNull(message = "DateOfStartWork must be have value")
     LocalDate DateOfStartWork;
+    @NotNull(message = "durationOfWorkPerHour must be have value")
     Integer durationOfWorkPerHour;
     @Enumerated(EnumType.STRING)
     SpecialistSelectionOfOrder specialistSelectionOfOrder;

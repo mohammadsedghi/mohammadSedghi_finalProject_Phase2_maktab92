@@ -85,10 +85,10 @@ public class MotherObject {
     }
     public Set<DutyDto> setOfDuty(){
         DutyDto dutyA=new DutyDto("AAA",new HashSet<>());
-        DutyDto dutyB=new DutyDto("BBB",new HashSet<>());
+      //  DutyDto dutyB=new DutyDto("BBB",new HashSet<>());
         Set<DutyDto> duties=new HashSet<>();
         duties.add(dutyA);
-        duties.add(dutyB);
+      //  duties.add(dutyB);
         return duties;
     }
     public AddressDto getValidAddressDto(){

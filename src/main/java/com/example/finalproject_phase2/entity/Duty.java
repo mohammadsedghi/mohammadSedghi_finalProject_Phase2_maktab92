@@ -32,4 +32,6 @@ public class Duty extends BaseEntity<Long> {
     }
 
 
+
+
 }

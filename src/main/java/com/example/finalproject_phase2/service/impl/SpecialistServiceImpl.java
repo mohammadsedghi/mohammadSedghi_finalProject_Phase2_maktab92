@@ -12,10 +12,7 @@ import com.example.finalproject_phase2.service.SpecialistService;
 import com.example.finalproject_phase2.util.CheckValidation;
 import com.example.finalproject_phase2.util.hash_password.EncryptPassword;
 import com.example.finalproject_phase2.entity.enumeration.SpecialistRegisterStatus;
-import jakarta.transaction.Transactional;
 import org.apache.commons.io.FileUtils;
-import org.hibernate.Transaction;
-import org.hibernate.TransactionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -207,5 +204,12 @@ public class SpecialistServiceImpl implements SpecialistService {
     @Override
     public Specialist findByEmail(String email) {
         return specialistRepository.findByEmail(email).get();
+    }
+
+    @Override
+    public ProjectResponse updateSpecialistScore(Integer score,Specialist specialist) {
+        specialist.setScore(score);
+        specialistRepository.save(specialist);
+        return new ProjectResponse("202","score of specialist is updated") ;
     }
 }

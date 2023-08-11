@@ -18,4 +18,5 @@ public interface SpecialistService {
      String convertImageToImageData(String imagePath) throws CustomInputOutputException;
      void convertByteArrayToImage (Specialist specialist, String newFilePath );
      Specialist findByEmail(String email);
+    ProjectResponse updateSpecialistScore(Integer score,Specialist specialist);
 }

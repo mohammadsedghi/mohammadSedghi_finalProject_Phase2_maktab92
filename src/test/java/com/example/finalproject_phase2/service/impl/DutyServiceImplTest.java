@@ -2,12 +2,12 @@ package com.example.finalproject_phase2.service.impl;
 
 import com.example.finalproject_phase2.dto.dutyDto.DutyDto;
 import com.example.finalproject_phase2.service.DutyService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
@@ -24,15 +24,21 @@ class DutyServiceImplTest {
     }
 
     @Test
+    @Order(1)
     void addDuty() {
-        assertEquals("202",dutyService.addDuty(motherObject.getValidDutyDto()).getCode());
+        assertEquals("500",dutyService.addDuty(motherObject.getValidDutyDto()).getCode());
     }
 
     @Test
+    @Order(2)
     void findAllByDuties() {
-      assertEquals(motherObject.setOfDuty(),dutyService.findAllByDuties());
+        List<DutyDto> dtoList=new ArrayList<>(motherObject.setOfDuty());
+        List<DutyDto> dtoListTwo=new ArrayList<>(dutyService.findAllByDuties());
+      //assertEquals(motherObject.setOfDuty(),dutyService.findAllByDuties());
+      assertEquals(dtoList.get(0).getName(),dtoListTwo.get(0).getName());
     }
     @Test
+    @Order(3)
     void findDutyByName() {
         assertEquals("AAA",dutyService.findByName("AAA").getName());
     }

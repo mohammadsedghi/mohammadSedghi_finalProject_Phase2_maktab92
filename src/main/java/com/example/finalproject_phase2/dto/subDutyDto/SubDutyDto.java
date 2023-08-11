@@ -4,6 +4,7 @@ import com.example.finalproject_phase2.entity.Duty;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Length;
@@ -22,6 +23,7 @@ public class SubDutyDto {
     @Length(message ="name must be 100 character",max = 100)
     String name;
     @NotNull(message = "basePrice of SubDuty must be have value")
+     @Positive(message = "base price must be positive")
     // @Pattern(message = "basePrice must be have positive value",regexp = "^[+]?\\d+([.]\\d+)?$")
     Double basePrice;
     @NotNull(message = "this field must be have value")

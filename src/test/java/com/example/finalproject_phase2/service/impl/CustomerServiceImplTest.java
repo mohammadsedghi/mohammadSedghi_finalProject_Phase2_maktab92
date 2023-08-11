@@ -1,18 +1,13 @@
 package com.example.finalproject_phase2.service.impl;
 
-import com.example.finalproject_phase2.custom_exception.CustomException;
+
 import com.example.finalproject_phase2.dto.customerDto.CustomerChangePasswordDto;
 import com.example.finalproject_phase2.dto.customerDto.CustomerLoginDto;
 import com.example.finalproject_phase2.dto.customerDto.CustomerSignUpDto;
-import com.example.finalproject_phase2.dto.ProjectResponse;
 import com.example.finalproject_phase2.repository.CustomerRepository;
 import com.example.finalproject_phase2.service.CustomerService;
 import com.example.finalproject_phase2.util.CheckValidation;
 import org.junit.jupiter.api.*;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -27,7 +22,6 @@ class CustomerServiceImplTest {
     CustomerService customerService;
     CustomerSignUpDto customerSignUpDto;
     MotherObject motherObject;
-    CustomerRepository customerRepository;
     CustomerLoginDto customerLoginDto;
     CustomerChangePasswordDto customerChangePasswordDto;
 

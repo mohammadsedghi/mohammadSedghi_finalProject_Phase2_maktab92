@@ -34,6 +34,7 @@ public class SubDutyServiceImpl implements SubDutyService {
             if (!checkValidation.isValid(subDutyDto)) {
                 throw new CustomException("input subDuty is invalid");
             }
+            if (isExistSubDuty(subDutyDto.getName())){ throw new CustomException("duplicate subDuty is invalid");}
             SubDuty subDuty = subDutyRepository.save(SubDutyMapper.subDutyDtoToSubDuty(subDutyDto));
             Set<SubDuty> subDuties = subDutyDto.getDuty().getSubDuties();
             subDuties.add(subDuty);

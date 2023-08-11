@@ -13,4 +13,13 @@ public class AddressMapper {
                 .houseNumber(addressDto.getHouseNumber())
                 .build();
     }
+    public static AddressDto addressToAddressDto(Address address) {
+        return AddressDto.builder()
+                .province(address.getProvince())
+                .city(address.getCity())
+                .street(address.getStreet())
+                .postalCode(address.getPostalCode())
+                .houseNumber(address.getHouseNumber())
+                .build();
+    }
 }

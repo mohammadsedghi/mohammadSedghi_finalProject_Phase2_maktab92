@@ -95,7 +95,7 @@ class SpecialistServiceImplTest {
     }
 
     @Test
-  // @Transactional
+
     void addSpecialistToSubDuty() {
    specialistService.addSpecialistToSubDuty(specialistService.findByEmail("ali@gmail.com"),
            subDutyService.findByName("AB"));
@@ -103,7 +103,7 @@ class SpecialistServiceImplTest {
 
     @Test
     void changePassword() {
-       assertEquals("202", specialistService.changePassword("ali@gmail.com","123456la","123456al").getCode());
+       assertEquals("202", specialistService.changePassword("ali@gmail.com","123456al","123456al").getCode());
     }
 
     @Test
@@ -117,6 +117,11 @@ class SpecialistServiceImplTest {
         String hashPassword = "1r4XLSqOFqcSothyoCIusZQ1xrReUHyK5jiq2N01BgVev4RCaCenVLKZDHm1QddXcR2BKgZE5/EU/Mwl7LNXhQ==";
         assertEquals(hashPassword, specialistService.encryptSpecialistPassword("123456al"));
 
+    }
+    @Test
+    void updateSpecialistScore(){
+        Specialist specialist = specialistService.findByEmail("ali@gmail.com");
+        assertEquals("202",specialistService.updateSpecialistScore(2,specialist).getCode());
     }
 
 }

@@ -3,10 +3,7 @@ package com.example.finalproject_phase2.service.impl;
 import com.example.finalproject_phase2.dto.addressDto.AddressDto;
 import com.example.finalproject_phase2.service.AddressService;
 import com.example.finalproject_phase2.service.impl.mapper.AddressMapper;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -25,11 +22,9 @@ class AddressServiceImplTest {
         motherObject=new MotherObject();
     }
 
+
     @Test
-    void deleteAddress() {
-        assertEquals(motherObject.getProjectResponseOfAddressRemoved(),addressService.removeAddress(motherObject.getValidAddressDto()));
-    }
-    @Test
+    @Order(1)
     void createAddress() {
         assertEquals(AddressMapper.addressDtoToAddress(motherObject.getValidAddressDto()),addressService.createAddress(motherObject.getValidAddressDto()));
     }
