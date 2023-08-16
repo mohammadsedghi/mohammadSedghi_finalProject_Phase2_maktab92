@@ -82,7 +82,7 @@ class SpecialistSuggestionServiceImplTest {
    }
    @Test
     void changeStatusOrderToStarted(){
-       SpecialistSuggestion specialistSuggestion = specialistSuggestionService.findById(2l);
+       SpecialistSuggestion specialistSuggestion = specialistSuggestionService.findById(1l);
         assertEquals("202",specialistSuggestionService.changeStatusOrderToStarted(ordersService.findById(1l).get(),specialistSuggestion).getCode());
    }
    @Test

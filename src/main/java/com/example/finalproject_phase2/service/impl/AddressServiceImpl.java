@@ -1,5 +1,6 @@
 package com.example.finalproject_phase2.service.impl;
 
+import com.example.finalproject_phase2.custom_exception.CustomException;
 import com.example.finalproject_phase2.custom_exception.CustomNoResultException;
 import com.example.finalproject_phase2.dto.ProjectResponse;
 import com.example.finalproject_phase2.dto.addressDto.AddressDto;
@@ -24,20 +25,20 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public ProjectResponse removeAddress(Address address) {
+    public Address removeAddress(Address address) {
         try {
             addressRepository.findAddressById(address).ifPresentOrElse(
                     addressCandidate -> {
                         addressRepository.delete(address);
                     }
                     , () -> {
-                        throw new CustomNoResultException("no any address found");
+                        throw new CustomException("no any address found");
                     }
             );
-        }catch (CustomNoResultException cnr){
-            return new ProjectResponse("500",cnr.getMessage());
+        }catch (CustomException cnr){
+            throw new CustomException(cnr.getMessage());
         }
-        return new ProjectResponse("202","address removed");
+        return address;
     }
 
     @Override

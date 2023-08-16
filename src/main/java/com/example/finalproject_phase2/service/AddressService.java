@@ -6,6 +6,6 @@ import com.example.finalproject_phase2.entity.Address;
 
 public interface AddressService {
     Address createAddress(AddressDto addressDto);
-    ProjectResponse removeAddress(Address address);
+    Address removeAddress(Address address);
     Address findById(Long id);
 }
