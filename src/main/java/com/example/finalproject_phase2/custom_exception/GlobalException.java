@@ -1,6 +1,8 @@
 package com.example.finalproject_phase2.custom_exception;
 
 import com.example.finalproject_phase2.dto.addressDto.AddressDto;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -11,8 +13,11 @@ import com.example.finalproject_phase2.dto.ProjectResponse;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-@RestControllerAdvice
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
+@RestControllerAdvice
 public class GlobalException extends ResponseEntityExceptionHandler {
 //        @ExceptionHandler(CustomException.class)
 //        public static ResponseEntity<String> handlerDeleteAddressException(CustomException ce, WebRequest webRequest){
@@ -21,6 +26,21 @@ public class GlobalException extends ResponseEntityExceptionHandler {
     @ExceptionHandler(CustomException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<String> handleAddressNotFoundException(CustomException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("aaaaaae"+ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+    @ExceptionHandler(CustomNoResultException.class)
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    public ResponseEntity<String> handleNoResultException(CustomNoResultException cre) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(cre.getMessage());
+    }
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Map<String,String>> handleInValidException(ConstraintViolationException e) {
+        Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
+        Map<String,String> messages = new HashMap<>();
+        for (ConstraintViolation<?> constraintViolation : constraintViolations) {
+            messages.put(constraintViolation.getPropertyPath().toString(),constraintViolation.getMessageTemplate());
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messages);
     }
 }

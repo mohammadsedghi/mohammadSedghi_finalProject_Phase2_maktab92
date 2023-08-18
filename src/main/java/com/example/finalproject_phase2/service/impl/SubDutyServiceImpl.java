@@ -29,7 +29,7 @@ public class SubDutyServiceImpl implements SubDutyService {
     SubDuty subDuty;
     CheckValidation checkValidation = new CheckValidation();
     @Override
-    public ProjectResponse addSubDuty(SubDutyDto subDutyDto) {
+    public SubDutyDto addSubDuty(SubDutyDto subDutyDto) {
         try {
             if (!checkValidation.isValid(subDutyDto)) {
                 throw new CustomException("input subDuty is invalid");

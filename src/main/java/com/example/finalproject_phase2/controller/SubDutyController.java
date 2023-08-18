@@ -1,11 +1,7 @@
 package com.example.finalproject_phase2.controller;
 
-import com.example.finalproject_phase2.dto.ProjectResponse;
-import com.example.finalproject_phase2.dto.subDutyDto.EditSubDutyDto;
 import com.example.finalproject_phase2.service.SubDutyService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import com.example.finalproject_phase2.service.impl.mapper.SubDutyMapper;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,8 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/subDuty")
 public class SubDutyController {
     private final SubDutyService subDutyService;
-    public SubDutyController(SubDutyService subDutyService) {
+    private final SubDutyMapper subDutyMapper;
+    public SubDutyController(SubDutyService subDutyService, SubDutyMapper subDutyMapper) {
         this.subDutyService = subDutyService;
+        this.subDutyMapper = subDutyMapper;
     }
 
 //    @PostMapping("/editSubDutyPrice")

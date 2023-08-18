@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface SubDutyService {
-    ProjectResponse addSubDuty(SubDutyDto subDutyDto);
+    SubDutyDto addSubDuty(SubDutyDto subDutyDto);
     Set<SubDuty> showAllSubDutyOfDuty(Duty duty);
     ProjectResponse editSubDutyPrice(SubDuty subduty,String price);
     ProjectResponse editSubDutyDescription(SubDuty subduty,String description);

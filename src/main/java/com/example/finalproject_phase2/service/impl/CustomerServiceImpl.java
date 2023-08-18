@@ -4,7 +4,7 @@ import com.example.finalproject_phase2.custom_exception.CustomException;
 import com.example.finalproject_phase2.custom_exception.CustomNoResultException;
 import com.example.finalproject_phase2.dto.customerDto.CustomerChangePasswordDto;
 import com.example.finalproject_phase2.dto.customerDto.CustomerLoginDto;
-import com.example.finalproject_phase2.dto.customerDto.CustomerSignUpDto;
+import com.example.finalproject_phase2.dto.customerDto.CustomerDto;
 import com.example.finalproject_phase2.dto.ProjectResponse;
 import com.example.finalproject_phase2.entity.Customer;
 import com.example.finalproject_phase2.repository.CustomerRepository;
@@ -25,12 +25,14 @@ import java.util.Optional;
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
     private final WalletService walletService;
+    private final CustomerMapper customerMapper;
     CheckValidation checkValidation = new CheckValidation();
 
     @Autowired
-    public CustomerServiceImpl(CustomerRepository customerRepository, WalletService walletService) {
+    public CustomerServiceImpl(CustomerRepository customerRepository, WalletService walletService, CustomerMapper customerMapper) {
         this.customerRepository = customerRepository;
         this.walletService = walletService;
+        this.customerMapper = customerMapper;
     }
 
 @Override
@@ -44,26 +46,25 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Transactional
     @Override
-    public ProjectResponse addCustomer(CustomerSignUpDto customerSignUpDto) {
+    public CustomerDto addCustomer(CustomerDto customerDto) {
         try {
-            if (!checkValidation.isValid(customerSignUpDto)) throw new CustomException("input is invalid ");
-            findByEmail(customerSignUpDto.getEmail()).ifPresentOrElse(
+            if (!checkValidation.isValid(customerDto)) throw new CustomException("input is invalid ");
+            findByEmail(customerDto.getEmail()).ifPresentOrElse(
                     tempCustomer -> {
                         throw new CustomException("customer with this email and password is exist ");
 
                     }, () -> {
-                        Customer customer = CustomerMapper.customerDtoToCustomer(customerSignUpDto);
+                        Customer customer = customerMapper.customerDtoToCustomer(customerDto);
                         customer.setPassword(encryptCustomerPassword(customer.getPassword()));
                         customer.setRegisterDate(LocalDate.now());
                         customer.setRegisterTime(LocalTime.now());
                         customer.setWallet(walletService.createWallet());
                         customerRepository.save(customer);
                     });
-            return new ProjectResponse("202", "customer saved(created)");
+            return  customerDto;
         } catch (CustomException c) {
-            return new ProjectResponse("500", c.getMessage());
+            return new CustomerDto();
         }
-
     }
 
     @Override
@@ -73,7 +74,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public ProjectResponse loginByEmailAndPassword(CustomerLoginDto customerLoginDto) {
+    public CustomerDto loginByEmailAndPassword(CustomerLoginDto customerLoginDto) {
         try {
             if (checkValidation.isValidEmail(customerLoginDto.getEmail()) && checkValidation.isValidPassword(customerLoginDto.getPassword())) {
                 customerRepository.findByEmailAndPassword(customerLoginDto.getEmail(), encryptCustomerPassword(customerLoginDto.getPassword())).ifPresentOrElse(
@@ -89,13 +90,13 @@ public class CustomerServiceImpl implements CustomerService {
             }
         } catch (CustomNoResultException c) {
             CheckValidation.memberTypeCustomer = new Customer();
-            return new ProjectResponse("500", c.getMessage());
+            return new CustomerDto();
         }
-        return new ProjectResponse("202", "customer accepted");
+        return customerMapper.customerToCustomerDto(CheckValidation.memberTypeCustomer);
     }
 
     @Override
-    public ProjectResponse changePassword(CustomerChangePasswordDto customerChangePasswordDto) {
+    public boolean changePassword(CustomerChangePasswordDto customerChangePasswordDto) {
         try {
             if (checkValidation.isValidEmail(customerChangePasswordDto.getEmail()) && checkValidation.isValidPassword(customerChangePasswordDto.getOldPassword())) {
                 if (checkValidation.isValidPassword(customerChangePasswordDto.getNewPassword())) {
@@ -114,8 +115,8 @@ public class CustomerServiceImpl implements CustomerService {
                 throw new CustomNoResultException("email and old password is invalid");
             }
         }catch (CustomNoResultException c){
-            return new ProjectResponse("500", c.getMessage());
+            return false;
         }
-        return new ProjectResponse("202", "password changed");
+        return true;
     }
 }

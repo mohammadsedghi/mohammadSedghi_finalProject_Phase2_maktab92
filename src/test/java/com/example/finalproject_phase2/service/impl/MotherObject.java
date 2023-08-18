@@ -5,7 +5,7 @@ import com.example.finalproject_phase2.dto.addressDto.AddressDto;
 import com.example.finalproject_phase2.dto.adminDto.AdminLoginDto;
 import com.example.finalproject_phase2.dto.customerDto.CustomerChangePasswordDto;
 import com.example.finalproject_phase2.dto.customerDto.CustomerLoginDto;
-import com.example.finalproject_phase2.dto.customerDto.CustomerSignUpDto;
+import com.example.finalproject_phase2.dto.customerDto.CustomerDto;
 import com.example.finalproject_phase2.dto.dutyDto.DutyDto;
 import com.example.finalproject_phase2.dto.subDutyDto.EditSubDutyDto;
 import com.example.finalproject_phase2.dto.subDutyDto.SubDutyDto;
@@ -28,8 +28,8 @@ public class MotherObject {
     ProjectResponse projectResponseOfAddressRemoved=new ProjectResponse("202","address removed");
 
 
-    public CustomerSignUpDto getValidCustomerSignUpDto(){
-        return CustomerSignUpDto.builder()
+    public CustomerDto getValidCustomerSignUpDto(){
+        return CustomerDto.builder()
                 .firstName("mahan")
                 .lastName("se")
                 .nationalId("4560116814")
@@ -37,8 +37,8 @@ public class MotherObject {
                 .password("123456mn")
                 .build();
     }
-    public CustomerSignUpDto getInValidCustomerSignUpDto(){
-        return CustomerSignUpDto.builder()
+    public CustomerDto getInValidCustomerSignUpDto(){
+        return CustomerDto.builder()
                 .firstName("mahan")
                 .lastName("se")
                 .nationalId("4560116814")

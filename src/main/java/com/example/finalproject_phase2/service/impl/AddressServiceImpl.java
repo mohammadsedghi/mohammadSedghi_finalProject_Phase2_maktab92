@@ -38,10 +38,10 @@ public class AddressServiceImpl implements AddressService {
         }catch (CustomException cnr){
             throw new CustomException(cnr.getMessage());
         }
-        return addressMapper.addressToAddressDto(address);
+        return addressDto;
     }
 
-    @Override
+
     public Address findById(Long id) {
         return addressRepository.findById(id).get();
     }
