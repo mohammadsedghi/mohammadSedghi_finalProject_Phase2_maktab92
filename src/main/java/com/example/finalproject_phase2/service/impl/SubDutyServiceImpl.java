@@ -3,7 +3,6 @@ package com.example.finalproject_phase2.service.impl;
 import com.example.finalproject_phase2.custom_exception.CustomException;
 import com.example.finalproject_phase2.custom_exception.CustomNumberFormatException;
 import com.example.finalproject_phase2.dto.ProjectResponse;
-import com.example.finalproject_phase2.dto.dutyDto.DutyDto;
 import com.example.finalproject_phase2.dto.subDutyDto.SubDutyDto;
 import com.example.finalproject_phase2.entity.Duty;
 import com.example.finalproject_phase2.entity.SubDuty;
@@ -14,7 +13,6 @@ import com.example.finalproject_phase2.service.impl.mapper.DutyMapper;
 import com.example.finalproject_phase2.service.impl.mapper.SubDutyMapper;
 import com.example.finalproject_phase2.util.CheckValidation;
 import com.example.finalproject_phase2.util.CustomRegex;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -22,12 +20,22 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
-@RequiredArgsConstructor
+
 public class SubDutyServiceImpl implements SubDutyService {
     private final SubDutyRepository subDutyRepository;
     private final DutyService dutyService;
+    private final SubDutyMapper subDutyMapper;
+    private final DutyMapper dutyMapper;
     SubDuty subDuty;
     CheckValidation checkValidation = new CheckValidation();
+
+    public SubDutyServiceImpl(SubDutyRepository subDutyRepository, DutyService dutyService, SubDutyMapper subDutyMapper, DutyMapper dutyMapper) {
+        this.subDutyRepository = subDutyRepository;
+        this.dutyService = dutyService;
+        this.subDutyMapper = subDutyMapper;
+        this.dutyMapper = dutyMapper;
+    }
+
     @Override
     public SubDutyDto addSubDuty(SubDutyDto subDutyDto) {
         try {
@@ -35,14 +43,15 @@ public class SubDutyServiceImpl implements SubDutyService {
                 throw new CustomException("input subDuty is invalid");
             }
             if (isExistSubDuty(subDutyDto.getName())){ throw new CustomException("duplicate subDuty is invalid");}
-            SubDuty subDuty = subDutyRepository.save(SubDutyMapper.subDutyDtoToSubDuty(subDutyDto));
+            SubDuty subDuty = subDutyRepository.save(subDutyMapper.subDutyDtoToSubDuty(subDutyDto));
             Set<SubDuty> subDuties = subDutyDto.getDuty().getSubDuties();
             subDuties.add(subDuty);
-            dutyService.addDuty(DutyMapper.dutyToDutyDto(subDutyDto.getDuty()));
+            dutyService.addDuty(dutyMapper.dutyToDutyDto(subDutyDto.getDuty()));
+            return  subDutyDto;
         } catch (CustomException ce) {
-            return new ProjectResponse("500", ce.getMessage());
+            return new SubDutyDto();
         }
-        return new ProjectResponse("202", "sub duty is saved");
+
     }
     @Override
     public Set<SubDuty> showAllSubDutyOfDuty(Duty duty) {

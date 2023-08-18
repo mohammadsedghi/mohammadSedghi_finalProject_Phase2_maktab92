@@ -25,7 +25,7 @@ class AdminServiceImplTest {
     @Test
     @Order(1)
     void loginByEmailAndPassword() {
-        assertEquals("202", adminService.loginByEmailAndPassword(motherObject.getValidAdminLoginDto()).getCode());
+        assertEquals(motherObject.getValidAdminLoginDto(), adminService.loginByEmailAndPassword(motherObject.getValidAdminLoginDto()));
 
     }
 

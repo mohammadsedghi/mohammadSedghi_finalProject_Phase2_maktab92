@@ -8,21 +8,20 @@ import com.example.finalproject_phase2.repository.DutyRepository;
 import com.example.finalproject_phase2.service.DutyService;
 import com.example.finalproject_phase2.service.impl.mapper.DutyMapper;
 import com.example.finalproject_phase2.util.CheckValidation;
-import org.hibernate.Transaction;
-import org.hibernate.TransactionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @Service
 public class DutyServiceImpl implements DutyService {
     private final DutyRepository dutyRepository;
+    private final DutyMapper dutyMapper;
     CheckValidation checkValidation=new CheckValidation();
     @Autowired
-    public DutyServiceImpl(DutyRepository dutyRepository) {
+    public DutyServiceImpl(DutyRepository dutyRepository, DutyMapper dutyMapper) {
         this.dutyRepository = dutyRepository;
+        this.dutyMapper = dutyMapper;
     }
 
     @Override
@@ -37,7 +36,7 @@ public class DutyServiceImpl implements DutyService {
                     throw new CustomException("this duty name is exist");
                 }
             });
-            dutyRepository.save(DutyMapper.dutyDtoToDuty(dutyDto));
+            dutyRepository.save(dutyMapper.dutyDtoToDuty(dutyDto));
 
         } catch ( CustomException ce) {
             return new ProjectResponse("500", ce.getMessage());
@@ -48,7 +47,7 @@ public class DutyServiceImpl implements DutyService {
 
     @Override
     public Set<DutyDto> findAllByDuties() {
-        return DutyMapper.collectionOfDutyToSetOfDuty(dutyRepository.findAllByDuties());
+        return dutyMapper.collectionOfDutyToSetOfDutyDto(dutyRepository.findAllByDuties());
     }
 
     @Override
