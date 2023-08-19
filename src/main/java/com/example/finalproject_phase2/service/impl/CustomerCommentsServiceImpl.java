@@ -2,6 +2,7 @@ package com.example.finalproject_phase2.service.impl;
 
 import com.example.finalproject_phase2.custom_exception.CustomException;
 import com.example.finalproject_phase2.dto.ProjectResponse;
+import com.example.finalproject_phase2.dto.specialistDto.SpecialistScoreDto;
 import com.example.finalproject_phase2.entity.CustomerComments;
 import com.example.finalproject_phase2.repository.CustomerCommentsRepository;
 import com.example.finalproject_phase2.service.CustomerCommentsService;
@@ -28,8 +29,10 @@ CheckValidation checkValidation=new CheckValidation();
             return new ProjectResponse("500", ce.getMessage());
         }
         customerCommentsRepository.save(customerComments);
-        specialistService.updateSpecialistScore(customerComments.getScore(),
-                customerComments.getOrders().getSpecialist());
+        SpecialistScoreDto specialistScoreDto=new SpecialistScoreDto();
+        specialistScoreDto.setSpecialist(customerComments.getOrders().getSpecialist());
+        specialistScoreDto.setScore(customerComments.getScore());
+        specialistService.updateSpecialistScore(specialistScoreDto);
   return new ProjectResponse("202","customerComments accepted");
     }
 }
