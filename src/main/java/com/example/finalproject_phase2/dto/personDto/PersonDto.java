@@ -9,7 +9,8 @@ import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-@Data
+@Setter
+@Getter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor

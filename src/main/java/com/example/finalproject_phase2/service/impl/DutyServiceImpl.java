@@ -17,7 +17,8 @@ import java.util.Set;
 public class DutyServiceImpl implements DutyService {
     private final DutyRepository dutyRepository;
     private final DutyMapper dutyMapper;
-    CheckValidation checkValidation=new CheckValidation();
+    CheckValidation checkValidation = new CheckValidation();
+
     @Autowired
     public DutyServiceImpl(DutyRepository dutyRepository, DutyMapper dutyMapper) {
         this.dutyRepository = dutyRepository;
@@ -25,9 +26,9 @@ public class DutyServiceImpl implements DutyService {
     }
 
     @Override
-    public ProjectResponse addDuty(DutyDto dutyDto) {
+    public DutyDto addDuty(DutyDto dutyDto) {
 
-        try{
+        try {
             if (!checkValidation.isValid(dutyDto)) {
                 throw new CustomException("this duty  is invalid");
             }
@@ -37,12 +38,12 @@ public class DutyServiceImpl implements DutyService {
                 }
             });
             dutyRepository.save(dutyMapper.dutyDtoToDuty(dutyDto));
-
-        } catch ( CustomException ce) {
-            return new ProjectResponse("500", ce.getMessage());
+            return dutyDto;
+        } catch (CustomException ce) {
+            return new DutyDto();
 
         }
-        return new ProjectResponse("202","duty saved");
+
     }
 
     @Override
@@ -51,7 +52,7 @@ public class DutyServiceImpl implements DutyService {
     }
 
     @Override
-    public Duty findByName(String name) {
-        return dutyRepository.findByName(name);
+    public DutyDto findByName(String name) {
+        return dutyMapper.dutyToDutyDto(dutyRepository.findByName(name));
     }
 }

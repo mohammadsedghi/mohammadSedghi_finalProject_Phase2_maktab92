@@ -3,6 +3,9 @@ package com.example.finalproject_phase2.service.impl;
 import com.example.finalproject_phase2.custom_exception.CustomException;
 import com.example.finalproject_phase2.custom_exception.CustomNumberFormatException;
 import com.example.finalproject_phase2.dto.ProjectResponse;
+import com.example.finalproject_phase2.dto.dutyDto.DutyDto;
+import com.example.finalproject_phase2.dto.subDutyDto.EditSubDutyDto;
+import com.example.finalproject_phase2.dto.subDutyDto.EditSubDutyDtoDescription;
 import com.example.finalproject_phase2.dto.subDutyDto.SubDutyDto;
 import com.example.finalproject_phase2.entity.Duty;
 import com.example.finalproject_phase2.entity.SubDuty;
@@ -54,36 +57,39 @@ public class SubDutyServiceImpl implements SubDutyService {
 
     }
     @Override
-    public Set<SubDuty> showAllSubDutyOfDuty(Duty duty) {
- return new HashSet<>(subDutyRepository.showSubDutyOfDuty(duty));
+    public Set<SubDuty> showAllSubDutyOfDuty(DutyDto dutyDto) {
+ return new HashSet<>(subDutyRepository.showSubDutyOfDuty(dutyMapper.dutyDtoToDuty(dutyDto)));
     }
     @Override
-    public ProjectResponse editSubDutyPrice(SubDuty subduty,String price ) {
+    public SubDutyDto editSubDutyPrice(EditSubDutyDto editSubDutyDto) {
         CustomRegex customRegex = new CustomRegex();
         try {
-            if (customRegex.checkOneInputIsValid(price, customRegex.getValidPrice())) {
-                subduty.setBasePrice(Double.parseDouble(price));
-                    subDutyRepository.save(subduty);
+            if (customRegex.checkOneInputIsValid(editSubDutyDto.getBasePrice(), customRegex.getValidPrice())) {
+                SubDutyDto subDutyCandidate = findByName(editSubDutyDto.getSubDuty().getName());
+                subDutyCandidate.setBasePrice(Double.parseDouble(editSubDutyDto.getBasePrice()));
+                    subDutyRepository.save(subDutyMapper.subDutyDtoToSubDuty(subDutyCandidate));
+                    return subDutyCandidate;
             } else throw new CustomNumberFormatException("input basePrice is invalid");
         } catch (CustomNumberFormatException cnf) {
-           return new ProjectResponse("500", cnf.getMessage());
+           return new SubDutyDto();
         }
-        return new ProjectResponse("202", "price edit");
     }
     @Override
-    public ProjectResponse editSubDutyDescription(SubDuty subduty, String description) {
+    public SubDutyDto editSubDutyDescription(EditSubDutyDtoDescription editSubDutyDtoDescription) {
         CustomRegex customRegex = new CustomRegex();
         try {
-            if (customRegex.checkOneInputIsValid(description, customRegex.getValidStr())) {
-                subduty.setDescription(description);
-                    subDutyRepository.save(subduty);
+            if (customRegex.checkOneInputIsValid(editSubDutyDtoDescription.getDescription(), customRegex.getValidStr())) {
+                SubDutyDto subDutyCandidate = findByName(editSubDutyDtoDescription.getSubDuty().getName());
+                subDutyCandidate.setDescription(editSubDutyDtoDescription.getDescription());
+                    subDutyRepository.save(subDutyMapper.subDutyDtoToSubDuty(subDutyCandidate));
+           return subDutyCandidate;
             } else {
                 throw new CustomException("input description is invalid");
             }
         } catch (CustomException ce) {
-            return new ProjectResponse("500", ce.getMessage());
+            return new SubDutyDto();
         }
-        return new ProjectResponse("202"," description edit");
+
     }
 
     @Override
@@ -98,11 +104,11 @@ public class SubDutyServiceImpl implements SubDutyService {
     }
 
     @Override
-    public SubDuty findByName(String name) {
+    public SubDutyDto findByName(String name) {
         subDutyRepository.findByName(name).ifPresentOrElse(
               subDuty1 ->{subDuty=subDuty1;}
               ,()->{subDuty=new SubDuty();}
        );
-        return subDuty;
+        return subDutyMapper.subDutyToSubDutyDto(subDuty);
     }
 }

@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Objects;
 import java.util.Set;
 
@@ -15,7 +17,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Builder
+//@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Specialist extends Person{
     @ManyToOne
@@ -32,19 +34,14 @@ public class Specialist extends Person{
     SpecialistRegisterStatus status;
     Integer score;
    @Column(name = "image_data", columnDefinition = "TEXT")
- // @Lob
     String imageData;
-
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//        Specialist that = (Specialist) o;
-//        return status == that.status;
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(status);
-//    }
+@Builder
+    public Specialist(String firstName, String lastName, String nationalId, String email, String password, LocalDate registerDate, LocalTime registerTime, Duty duty, Set<SubDuty> subDuties, Wallet wallet, SpecialistRegisterStatus status, Integer score) {
+        super(firstName, lastName, nationalId, email, password, registerDate, registerTime);
+        this.duty = duty;
+        this.subDuties = subDuties;
+        this.wallet = wallet;
+        this.status = status;
+        this.score = score;
+    }
 }

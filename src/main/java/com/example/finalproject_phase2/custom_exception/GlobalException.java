@@ -33,6 +33,10 @@ public class GlobalException extends ResponseEntityExceptionHandler {
     public ResponseEntity<String> handleNoResultException(CustomNoResultException cre) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(cre.getMessage());
     }
+    @ExceptionHandler(CustomNoResultException.class)
+    public ResponseEntity<String> handleNumberFormatException(CustomNumberFormatException cnfe) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(cnfe.getMessage());
+    }
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Map<String,String>> handleInValidException(ConstraintViolationException e) {

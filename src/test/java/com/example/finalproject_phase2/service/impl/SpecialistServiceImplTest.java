@@ -1,6 +1,7 @@
 package com.example.finalproject_phase2.service.impl;
 
 import com.example.finalproject_phase2.custom_exception.CustomInputOutputException;
+import com.example.finalproject_phase2.dto.specialistDto.*;
 import com.example.finalproject_phase2.entity.Duty;
 import com.example.finalproject_phase2.entity.Specialist;
 import com.example.finalproject_phase2.entity.SubDuty;
@@ -10,6 +11,8 @@ import com.example.finalproject_phase2.service.DutyService;
 import com.example.finalproject_phase2.service.SpecialistService;
 import com.example.finalproject_phase2.service.SubDutyService;
 import com.example.finalproject_phase2.service.WalletService;
+import com.example.finalproject_phase2.service.impl.mapper.DutyMapper;
+import com.example.finalproject_phase2.service.impl.mapper.SecondSpecialistMapper;
 import com.example.finalproject_phase2.service.impl.mapper.SubDutyMapper;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
@@ -30,6 +33,10 @@ class SpecialistServiceImplTest {
     SpecialistService specialistService;
     @Autowired
     DutyService dutyService;
+    @Autowired
+    DutyMapper dutyMapper;
+    @Autowired
+    SubDutyMapper subDutyMapper;
     @Autowired
     SubDutyService subDutyService;
     @Autowired
@@ -54,10 +61,10 @@ class SpecialistServiceImplTest {
 
     @Test
     @Order(1)
-//    @Transactional
+
     void addSpecialist() throws CustomInputOutputException {
-        Duty duty1 = dutyService.findByName("AAA");
-        SubDuty subDuty1 = subDutyService.findByName("CD");
+        Duty duty1 = dutyMapper.dutyDtoToDuty(dutyService.findByName("AAA"));
+        SubDuty subDuty1 =subDutyMapper.subDutyDtoToSubDuty(subDutyService.findByName("CD")) ;
       // SubDuty subDuty2 = subDutyService.findByName("AB");
         Set<SubDuty> subDutySet = new HashSet<>();
         subDutySet.add(subDuty1);
@@ -76,34 +83,46 @@ class SpecialistServiceImplTest {
         specialist.setPassword("123456al");
         specialist.setRegisterDate(LocalDate.now());
         specialist.setRegisterTime(LocalTime.now());
-        specialistService.addSpecialist(specialist);
-        specialistService.convertByteArrayToImage(specialist, "t.jpg");
+        specialistService.addSpecialist(SecondSpecialistMapper.specialistToSpecialistDto(specialist));
+        ConvertImageDto imageDto=new ConvertImageDto();
+        imageDto.setSpecialist(specialist);
+        imageDto.setFilePath("t.jpg");
+        specialistService.convertByteArrayToImage(imageDto);
     }
 
     @Test
     @Transactional
     @Order(4)
     void loginByEmailAndPassword() {
-        assertEquals("202", specialistService.loginByEmailAndPassword("ali@gmail.com", "123456al").getCode());
+        SpecialistLoginDto specialistLoginDto=new SpecialistLoginDto();
+        specialistLoginDto.setEmail("ali@gmail.com");
+        specialistLoginDto.setPassword("123456al");
+        assertEquals(specialistLoginDto, specialistService.loginByEmailAndPassword(specialistLoginDto ));
     }
 
     @Test
     @Order(3)
     void confirmSpecialistByAdmin() {
 
-        specialistService.confirmSpecialistByAdmin(specialistService.findByEmail("ali@gmail.com"));
+        specialistService.confirmSpecialistByAdmin(SecondSpecialistMapper.specialistToSpecialistDto(specialistService.findByEmail("ali@gmail.com")));
     }
 
     @Test
 
     void addSpecialistToSubDuty() {
-   specialistService.addSpecialistToSubDuty(specialistService.findByEmail("ali@gmail.com"),
-           subDutyService.findByName("AB"));
+        SpecialistSubDutyDto specialistSubDutyDto=new SpecialistSubDutyDto();
+        specialistSubDutyDto.setSpecialist(specialistService.findByEmail("ali@gmail.com"));
+        specialistSubDutyDto.setSubDuty(subDutyMapper.subDutyDtoToSubDuty(subDutyService.findByName("AB")) );
+   specialistService.addSpecialistToSubDuty(specialistSubDutyDto);
     }
 
     @Test
     void changePassword() {
-       assertEquals("202", specialistService.changePassword("ali@gmail.com","123456al","123456al").getCode());
+        SpecialistChangePasswordDto specialistChangePasswordDto=new SpecialistChangePasswordDto();
+        specialistChangePasswordDto.setEmail("ali@gmail.com");
+        specialistChangePasswordDto.setOldPassword("123456al");
+        specialistChangePasswordDto.setNewPassword("123456al");
+       assertEquals(true, specialistService.changePassword(specialistChangePasswordDto));
     }
 
     @Test
@@ -121,7 +140,10 @@ class SpecialistServiceImplTest {
     @Test
     void updateSpecialistScore(){
         Specialist specialist = specialistService.findByEmail("ali@gmail.com");
-        assertEquals("202",specialistService.updateSpecialistScore(2,specialist).getCode());
+        SpecialistScoreDto specialistScoreDto=new SpecialistScoreDto();
+        specialistScoreDto.setScore(2);
+        specialistScoreDto.setSpecialist(specialist);
+        assertEquals(specialistScoreDto.getScore(),specialistService.updateSpecialistScore(specialistScoreDto));
     }
 
 }

@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.Set;
 
 public interface DutyService {
-    ProjectResponse addDuty(DutyDto dutyDto);
+    DutyDto addDuty(DutyDto dutyDto);
     Set<DutyDto> findAllByDuties();
-    Duty findByName(String name);
+    DutyDto findByName(String name);
 }
