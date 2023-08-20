@@ -3,6 +3,9 @@ package com.example.finalproject_phase2.service.impl.mapper;
 import com.example.finalproject_phase2.dto.ordersDto.OrdersDto;
 import com.example.finalproject_phase2.entity.Orders;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 public class OrdersMapper {
     public static Orders ordersDtoToOrders(OrdersDto ordersDto) {
         return Orders.builder().
@@ -29,4 +32,13 @@ public class OrdersMapper {
                 .timeOfWork(orders.getTimeOfWork())
                         .build();
     }
+    public static Collection<OrdersDto> collectionOrdersToCollectionOrdersDto(Collection<Orders> ordersCollection){
+       Collection<OrdersDto> ordersDtoCollection=new ArrayList<>();
+        for (Orders converter:ordersCollection
+             ) {
+           ordersDtoCollection.add(ordersToOrdersDto(converter)) ;
+        }
+        return ordersDtoCollection;
+    }
+
 }

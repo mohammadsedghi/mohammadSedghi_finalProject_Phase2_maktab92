@@ -37,6 +37,10 @@ public class GlobalException extends ResponseEntityExceptionHandler {
     public ResponseEntity<String> handleNumberFormatException(CustomNumberFormatException cnfe) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(cnfe.getMessage());
     }
+    @ExceptionHandler(CustomDuplicateInfoException.class)
+    public ResponseEntity<String> handleCustomDuplicateInfoException(CustomDuplicateInfoException cdi) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(cdi.getMessage());
+    }
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Map<String,String>> handleInValidException(ConstraintViolationException e) {
