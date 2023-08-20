@@ -54,8 +54,10 @@ public class SpecialistController {
       try {
           specialistService.convertByteArrayToImage(convertImageDto);
           return new ResponseEntity<>("image is converted", HttpStatus.ACCEPTED);
-      }catch(CustomException ce){}
+      }catch(CustomException ce){
+          throw new CustomException(ce.getMessage());
+      }
 
-      throw new CustomException("convert image have problem");
+
     }
 }

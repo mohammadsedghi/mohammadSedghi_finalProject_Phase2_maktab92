@@ -17,7 +17,7 @@ public class PersonResult {
 
     String firstName;
 
-    String lastname;
+    String lastName;
 
     String nationalId;
     String email;

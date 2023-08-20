@@ -7,10 +7,12 @@ import com.example.finalproject_phase2.dto.customerDto.CustomerDto;
 import com.example.finalproject_phase2.dto.customerDto.CustomerLoginDto;
 import com.example.finalproject_phase2.service.CustomerService;
 import com.example.finalproject_phase2.service.impl.mapper.CustomerMapper;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,8 +32,8 @@ public class CustomerController {
 
     @PostMapping("/signUp")
     public ResponseEntity<CustomerDto> AddCustomer(@RequestBody @Valid CustomerDto customerDto) {
-        CustomerDto customerDtoResult = customerService.addCustomer(customerDto);
-        if (customerDtoResult!=null){
+            CustomerDto customerDtoResult = customerService.addCustomer(customerDto);
+             if (customerDtoResult!=null){
             return new ResponseEntity<>(customerDtoResult, HttpStatus.ACCEPTED);
         }else  throw new CustomException("customer not saved");
     }
