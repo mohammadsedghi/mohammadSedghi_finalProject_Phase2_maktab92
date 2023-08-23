@@ -4,11 +4,14 @@ package com.example.finalproject_phase2.service.impl;
 import com.example.finalproject_phase2.dto.customerDto.CustomerChangePasswordDto;
 import com.example.finalproject_phase2.dto.customerDto.CustomerLoginDto;
 import com.example.finalproject_phase2.dto.customerDto.CustomerDto;
+import com.example.finalproject_phase2.entity.Customer;
 import com.example.finalproject_phase2.service.CustomerService;
 import com.example.finalproject_phase2.util.CheckValidation;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -78,5 +81,20 @@ class CustomerServiceImplTest {
         customerService.changePassword(motherObject.getValidCustomerChangePasswordDto());
         customerService.loginByEmailAndPassword(motherObject.getValidCustomerLoginDtoAfterChangePassword());
         assertEquals(motherObject.getDuplicateEmail(),CheckValidation.memberTypeCustomer.getEmail());
+    }
+    @Test
+    @Order(8)
+    void searchCustomer(){
+        CustomerDto customerDto=new CustomerDto();
+        customerDto.setEmail("mahan@gmail.com");
+        customerDto.setFirstName("reza");
+        customerDto.setLastName("akbar");
+        customerDto.setNationalId("4560116815");
+        List<Customer> customers =customerService.searchCustomer(customerDto);
+        System.out.println("cccccccccc"+customers.size());
+        for (Customer c:customers
+             ) {
+            System.out.println(c.getEmail());
+        }
     }
 }

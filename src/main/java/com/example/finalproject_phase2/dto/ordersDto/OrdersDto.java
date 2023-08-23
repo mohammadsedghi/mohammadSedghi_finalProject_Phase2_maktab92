@@ -20,11 +20,11 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrdersDto {
-    @ManyToOne
+
     Customer customer;
-    @ManyToOne
+
     Specialist specialist;
-    @ManyToOne
+
     SubDuty subDuty;
     @NotNull(message = "proposedPrice must be have value")
     Double proposedPrice;
@@ -34,13 +34,14 @@ public class OrdersDto {
     LocalDate DateOfWork;
     @NotNull(message = "timeOfWork must be have value")
     LocalTime timeOfWork;
-    @OneToOne
+
     Address address;
-    @Enumerated(EnumType.STRING)
+
     OrderStatus orderStatus;
 @Builder
-    public OrdersDto(Customer customer, SubDuty subDuty, Double proposedPrice, String description, LocalDate dateOfWork, LocalTime timeOfWork, Address address, OrderStatus orderStatus) {
+    public OrdersDto(Customer customer,Specialist specialist, SubDuty subDuty, Double proposedPrice, String description, LocalDate dateOfWork, LocalTime timeOfWork, Address address, OrderStatus orderStatus) {
         this.customer = customer;
+        this.specialist=specialist;
         this.subDuty = subDuty;
         this.proposedPrice = proposedPrice;
         this.description = description;

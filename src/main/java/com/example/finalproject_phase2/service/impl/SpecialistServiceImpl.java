@@ -7,8 +7,10 @@ import com.example.finalproject_phase2.dto.specialistDto.*;
 import com.example.finalproject_phase2.entity.Customer;
 import com.example.finalproject_phase2.entity.Specialist;
 import com.example.finalproject_phase2.entity.SubDuty;
+import com.example.finalproject_phase2.entity.Wallet;
 import com.example.finalproject_phase2.repository.SpecialistRepository;
 import com.example.finalproject_phase2.service.SpecialistService;
+import com.example.finalproject_phase2.service.WalletService;
 import com.example.finalproject_phase2.service.impl.mapper.SecondSpecialistMapper;
 import com.example.finalproject_phase2.util.CheckValidation;
 import com.example.finalproject_phase2.util.hash_password.EncryptPassword;
@@ -27,28 +29,34 @@ import java.util.*;
 @Service
 public class SpecialistServiceImpl implements SpecialistService {
     private final SpecialistRepository specialistRepository;
-//    private final SpecialistMapper specialistMapper;
-    CheckValidation checkValidation=new CheckValidation();
+    private final WalletService walletService;
+    CheckValidation checkValidation = new CheckValidation();
+
     @Autowired
-    public SpecialistServiceImpl(SpecialistRepository specialistRepository) {
+    public SpecialistServiceImpl(SpecialistRepository specialistRepository, WalletService walletService) {
         this.specialistRepository = specialistRepository;
-//        this.specialistMapper = specialistMapper;
+
+        this.walletService = walletService;
     }
 
     @Override
     public SpecialistDto addSpecialist(SpecialistDto specialistDto) {
         try {
-            if (!checkValidation.isValid(specialistDto))throw new CustomException("input  is invalid  ");
+            if (!checkValidation.isValid(specialistDto)) throw new CustomException("input  is invalid  ");
             specialistRepository.findByEmail(specialistDto.getEmail()).ifPresentOrElse(
-                    tempCustomer -> {throw new CustomException("Specialist with this email and password is exist ");
+                    tempCustomer -> {
+                        throw new CustomException("Specialist with this email and password is exist ");
                     }, () -> {
+                        Wallet wallet = walletService.createWallet();
                         specialistDto.setPassword(encryptSpecialistPassword(specialistDto.getPassword()));
                         Specialist specialist = SecondSpecialistMapper.specialistDtoToSpecialist(specialistDto);
+                       specialist.setWallet(wallet);
+                       specialist.setStatus(SpecialistRegisterStatus.WAITING_FOR_CONFIRM);
                         specialist.setRegisterDate(LocalDate.now());
                         specialist.setRegisterTime(LocalTime.now());
                         specialistRepository.save(specialist);
                     });
-        }catch (CustomException c){
+        } catch (CustomException c) {
             return new SpecialistDto();
         }
         return specialistDto;
@@ -73,7 +81,7 @@ public class SpecialistServiceImpl implements SpecialistService {
             CheckValidation.memberTypeCustomer = new Customer();
             return new SpecialistDto();
         }
-       return  SecondSpecialistMapper.specialistToSpecialistDto(CheckValidation.memberTypespecialist);
+        return SecondSpecialistMapper.specialistToSpecialistDto(CheckValidation.memberTypespecialist);
     }
 
     @Override
@@ -91,7 +99,7 @@ public class SpecialistServiceImpl implements SpecialistService {
                     }
                 }
             }
-        }catch (CustomNoResultException cnr){
+        } catch (CustomNoResultException cnr) {
             return new SpecialistDto();
         }
         return specialistDto;
@@ -100,16 +108,16 @@ public class SpecialistServiceImpl implements SpecialistService {
     @Override
     public Boolean addSpecialistToSubDuty(SpecialistSubDutyDto specialistSubDutyDto) {
 
-        Set<SubDuty> setOfSubDuty=specialistSubDutyDto.getSpecialist().getSubDuties();
+        Set<SubDuty> setOfSubDuty = specialistSubDutyDto.getSpecialist().getSubDuties();
         specialistSubDutyDto.getSpecialist().getSubDuties().forEach(element -> {
-            if (! specialistSubDutyDto.getSpecialist().getSubDuties().contains(specialistSubDutyDto.getSubDuty())) {
+            if (!specialistSubDutyDto.getSpecialist().getSubDuties().contains(specialistSubDutyDto.getSubDuty())) {
                 specialistSubDutyDto.getSpecialist().getSubDuties().add(specialistSubDutyDto.getSubDuty());
                 specialistRepository.save(specialistSubDutyDto.getSpecialist());
-            }else {
+            } else {
                 throw new CustomException("this specialist added to this subDuty before");
             }
         });
-      //  System.out.println("bbbbbb"+setOfSubDuty);
+        //  System.out.println("bbbbbb"+setOfSubDuty);
 //        for (SubDuty subDutyCandidate:setOfSubDuty
 //        ) {
 //            if (subDutyCandidate!=a){
@@ -145,7 +153,7 @@ public class SpecialistServiceImpl implements SpecialistService {
             } else {
                 throw new CustomNoResultException("email and old password is invalid");
             }
-        }catch (CustomNoResultException c){
+        } catch (CustomNoResultException c) {
             return false;
         }
         return true;
@@ -153,17 +161,17 @@ public class SpecialistServiceImpl implements SpecialistService {
 
     @Override
     public void removeSpecialistFromDuty() {
-        Set<Specialist> confirmSpecialist=new HashSet<>(specialistRepository.showConfirmSpecialist(SpecialistRegisterStatus.CONFIRM));
-        if(confirmSpecialist.size()==0){
+        Set<Specialist> confirmSpecialist = new HashSet<>(specialistRepository.showConfirmSpecialist(SpecialistRegisterStatus.CONFIRM));
+        if (confirmSpecialist.size() == 0) {
             System.out.println("no specialist unConfirm found");
-        }else{
-            for (Specialist specialist:confirmSpecialist
+        } else {
+            for (Specialist specialist : confirmSpecialist
             ) {
-                    specialist.setStatus(SpecialistRegisterStatus.WAITING_FOR_CONFIRM);
-                        specialistRepository.save(specialist);
-                }
+                specialist.setStatus(SpecialistRegisterStatus.WAITING_FOR_CONFIRM);
+                specialistRepository.save(specialist);
             }
         }
+    }
 
 
     @Override
@@ -189,25 +197,25 @@ public class SpecialistServiceImpl implements SpecialistService {
         }
     }
 
-        public void convertByteArrayToImage (ConvertImageDto convertImageDto){
+    public void convertByteArrayToImage(ConvertImageDto convertImageDto) {
 
-            Optional<Specialist> SpecialistId = specialistRepository.findById(convertImageDto.getSpecialist().getId());
-            SpecialistId.ifPresentOrElse(member -> {
-                byte[] imageData = Base64.getDecoder().decode(member.getImageData());
-                try (FileOutputStream fileOutputStream = new FileOutputStream(convertImageDto.getFilePath())) {
-                    fileOutputStream.write(imageData);
-                } catch (IOException e) {
+        Optional<Specialist> SpecialistId = specialistRepository.findById(convertImageDto.getSpecialist().getId());
+        SpecialistId.ifPresentOrElse(member -> {
+            byte[] imageData = Base64.getDecoder().decode(member.getImageData());
+            try (FileOutputStream fileOutputStream = new FileOutputStream(convertImageDto.getFilePath())) {
+                fileOutputStream.write(imageData);
+            } catch (IOException e) {
 
-                }
-            }, () -> {
-                try {
-                    throw new CustomInputOutputException("no specialist found");
-                } catch (CustomInputOutputException e) {
+            }
+        }, () -> {
+            try {
+                throw new CustomInputOutputException("no specialist found");
+            } catch (CustomInputOutputException e) {
 
-                }
-            });
+            }
+        });
 
-        }
+    }
 
     @Override
     public Specialist findByEmail(String email) {
@@ -216,8 +224,10 @@ public class SpecialistServiceImpl implements SpecialistService {
 
     @Override
     public Integer updateSpecialistScore(SpecialistScoreDto specialistScoreDto) {
+       // specialistScoreDto.getSpecialist().setScore(specialistScoreDto.getScore());
         specialistScoreDto.getSpecialist().setScore(specialistScoreDto.getScore());
+        System.out.println("fffffffffff"+specialistScoreDto.getSpecialist().getScore());
         specialistRepository.save(specialistScoreDto.getSpecialist());
-        return  specialistScoreDto.getScore();
+        return specialistScoreDto.getScore();
     }
 }

@@ -2,6 +2,11 @@ package com.example.finalproject_phase2.service;
 
 import com.example.finalproject_phase2.dto.ProjectResponse;
 import com.example.finalproject_phase2.dto.customerDto.CustomerDto;
+import com.example.finalproject_phase2.dto.ordersDto.OrdersDto;
+import com.example.finalproject_phase2.dto.specialistSuggestionDto.SpecialistSuggestionDto;
+import com.example.finalproject_phase2.dto.specialistSuggestionDto.StatusOrderSpecialistSuggestionDto;
+import com.example.finalproject_phase2.dto.specialistSuggestionDto.StatusOrderSpecialistSuggestionDtoWithOrderAndSpecialist;
+import com.example.finalproject_phase2.dto.specialistSuggestionDto.ValidSpecialistSuggestionDto;
 import com.example.finalproject_phase2.entity.*;
 import com.example.finalproject_phase2.entity.enumeration.SpecialistSelectionOfOrder;
 
@@ -10,15 +15,15 @@ import java.util.Optional;
 
 public interface SpecialistSuggestionService {
     Boolean submitSpecialistSuggestion(SpecialistSuggestion specialistSuggestion);
-    boolean findSuggestWithThisSpecialistAndOrder(Specialist specialist, Orders orders);
-    Boolean IsValidSpecialSuggestion(Specialist specialist, Orders orders, Integer workTimePerHour,
-                                             int hour,int minutes,int day,int month,int year,SubDuty subDuty, Double proposedPrice);
-    List<SpecialistSuggestion> findCustomerOrderSuggestionOnPrice(CustomerDto customerDto);
-    List<SpecialistSuggestion> findCustomerOrderSuggestionOnScoreOfSpecialist(CustomerDto customerDto);
-    ProjectResponse changeStatusOrderToWaitingForSpecialistToWorkplace(Orders orders,Specialist specialist);
+    Boolean findSuggestWithThisSpecialistAndOrder(StatusOrderSpecialistSuggestionDtoWithOrderAndSpecialist statusOrderSpecialistSuggestionDtoWithOrderAndSpecialist);
+    Boolean IsValidSpecialSuggestion(ValidSpecialistSuggestionDto validSpecialistSuggestionDto);
+    List<SpecialistSuggestionDto> findCustomerOrderSuggestionOnPrice(CustomerDto customerDto);
+    List<SpecialistSuggestionDto> findCustomerOrderSuggestionOnScoreOfSpecialist(CustomerDto customerDto);
+    Boolean changeStatusOrderToWaitingForSpecialistToWorkplace(StatusOrderSpecialistSuggestionDtoWithOrderAndSpecialist statusOrderSpecialistSuggestionDtoWithOrderAndSpecialist);
     SpecialistSelectionOfOrder changeSpecialistSelectedOfOrder(SpecialistSelectionOfOrder specialistSelectionOfOrder);
-    ProjectResponse changeStatusOrderToStarted(Orders orders,SpecialistSuggestion specialistSuggestion);
-    ProjectResponse changeStatusOrderToDone(Orders orders);
+    Boolean changeStatusOrderToStarted(StatusOrderSpecialistSuggestionDto statusOrderSpecialistSuggestionDto);
+    Boolean changeStatusOrderToDone(OrdersDto ordersDto);
+    Boolean CheckTimeOfWork(SpecialistSuggestionDto specialistSuggestionDto);
     SpecialistSuggestion findById(Long id);
 
 

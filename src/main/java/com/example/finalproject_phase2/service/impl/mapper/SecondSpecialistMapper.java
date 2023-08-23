@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 
-@Setter
-@Getter
-@NoArgsConstructor
+
+
 @Component
 public class SecondSpecialistMapper {
     public static Specialist specialistDtoToSpecialist(SpecialistDto specialistDto){
@@ -17,8 +16,6 @@ public class SecondSpecialistMapper {
         duty(specialistDto.getDuty()).
         subDuties(specialistDto.getSubDuties()) .
        score(specialistDto.getScore()).
-       wallet(specialistDto.getWallet()).
-                status(specialistDto.getStatus()).
                 firstName(specialistDto.getFirstName()).
                 lastName(specialistDto.getLastName()).
                 email(specialistDto.getEmail()).
@@ -33,9 +30,7 @@ public class SecondSpecialistMapper {
                 nationalId(specialist.getNationalId()).
                 password(specialist.getPassword()).
                 email(specialist.getEmail()).
-                status(specialist.getStatus()).
                 score(specialist.getScore()).
-                wallet(specialist.getWallet()).
                 duty(specialist.getDuty()).
                 subDuties(specialist.getSubDuties())
                 .build();

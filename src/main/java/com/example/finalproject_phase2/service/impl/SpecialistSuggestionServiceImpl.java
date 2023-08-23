@@ -1,17 +1,23 @@
 package com.example.finalproject_phase2.service.impl;
 
 import com.example.finalproject_phase2.custom_exception.CustomException;
-import com.example.finalproject_phase2.dto.ProjectResponse;
 import com.example.finalproject_phase2.dto.customerDto.CustomerDto;
+import com.example.finalproject_phase2.dto.ordersDto.OrdersDto;
 import com.example.finalproject_phase2.dto.ordersDto.OrdersDtoWithOrdersStatus;
+import com.example.finalproject_phase2.dto.specialistDto.SpecialistScoreDto;
+import com.example.finalproject_phase2.dto.specialistSuggestionDto.SpecialistSuggestionDto;
+import com.example.finalproject_phase2.dto.specialistSuggestionDto.StatusOrderSpecialistSuggestionDto;
+import com.example.finalproject_phase2.dto.specialistSuggestionDto.StatusOrderSpecialistSuggestionDtoWithOrderAndSpecialist;
+import com.example.finalproject_phase2.dto.specialistSuggestionDto.ValidSpecialistSuggestionDto;
 import com.example.finalproject_phase2.entity.*;
 import com.example.finalproject_phase2.entity.enumeration.OrderStatus;
 import com.example.finalproject_phase2.entity.enumeration.SpecialistSelectionOfOrder;
 import com.example.finalproject_phase2.repository.SpecialistSuggestionRepository;
-import com.example.finalproject_phase2.service.CustomerService;
 import com.example.finalproject_phase2.service.OrdersService;
+import com.example.finalproject_phase2.service.SpecialistService;
 import com.example.finalproject_phase2.service.SpecialistSuggestionService;
 import com.example.finalproject_phase2.service.impl.mapper.CustomerMapper;
+import com.example.finalproject_phase2.service.impl.mapper.OrdersMapper;
 import com.example.finalproject_phase2.service.impl.mapper.SpecialistSuggestionMapper;
 import com.example.finalproject_phase2.util.CheckValidation;
 import com.example.finalproject_phase2.util.validation.CalenderAndValidation;
@@ -20,48 +26,52 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Service
 public class SpecialistSuggestionServiceImpl implements SpecialistSuggestionService {
     private final SpecialistSuggestionRepository specialistSuggestionRepository;
     private final OrdersService ordersService;
-    private final SpecialistSuggestionMapper specialistSuggestionMapper;
     private final CustomerMapper customerMapper;
+    private final SpecialistService specialistService;
     CalenderAndValidation calenderAndValidation = new CalenderAndValidation();
     CheckValidation checkValidation = new CheckValidation();
 
     @Autowired
-    public SpecialistSuggestionServiceImpl(SpecialistSuggestionRepository specialistSuggestionRepository, OrdersService ordersService, CustomerMapper customerMapper,SpecialistSuggestionMapper specialistSuggestionMapper) {
+    public SpecialistSuggestionServiceImpl(SpecialistSuggestionRepository specialistSuggestionRepository, OrdersService ordersService, CustomerMapper customerMapper, SpecialistService specialistService) {
         this.specialistSuggestionRepository = specialistSuggestionRepository;
         this.ordersService = ordersService;
         this.customerMapper = customerMapper;
-        this.specialistSuggestionMapper = specialistSuggestionMapper;
+        this.specialistService = specialistService;
     }
 
     @Override
-    public Boolean IsValidSpecialSuggestion(Specialist specialist, Orders orders, Integer workTimePerHour,
-                                            int hour, int minutes, int day, int month, int year, SubDuty subDuty, Double proposedPrice) {
+    public Boolean IsValidSpecialSuggestion(ValidSpecialistSuggestionDto validSpecialistSuggestionDto){
         try {
-            if (!findSuggestWithThisSpecialistAndOrder(specialist, orders)) {
+            StatusOrderSpecialistSuggestionDtoWithOrderAndSpecialist statusOrderSpecialistSuggestionDtoWithOrderAndSpecialist=new StatusOrderSpecialistSuggestionDtoWithOrderAndSpecialist();
+            statusOrderSpecialistSuggestionDtoWithOrderAndSpecialist.setSpecialist(validSpecialistSuggestionDto.getSpecialist());
+            statusOrderSpecialistSuggestionDtoWithOrderAndSpecialist.setOrders(validSpecialistSuggestionDto.getOrders());
+            if (!findSuggestWithThisSpecialistAndOrder(statusOrderSpecialistSuggestionDtoWithOrderAndSpecialist)) {
                 throw new CustomException("duplicate request for suggest");
             }
-            if (!calenderAndValidation.setAndConvertDate(orders.getDateOfWork(),
-                    day, month, year, orders.getTimeOfWork(), hour, minutes)) {
+            if (!calenderAndValidation.setAndConvertDate(validSpecialistSuggestionDto.getOrders().getDateOfWork(),
+                    validSpecialistSuggestionDto.getDay(), validSpecialistSuggestionDto.getMonth(), validSpecialistSuggestionDto.getYear(), validSpecialistSuggestionDto.getOrders().getTimeOfWork(), validSpecialistSuggestionDto.getHour(), validSpecialistSuggestionDto.getMinutes())) {
                 throw new CustomException("order time of work is not valid");
             }
             OrdersDtoWithOrdersStatus ordersDtoWithOrdersStatus = new OrdersDtoWithOrdersStatus();
-            ordersDtoWithOrdersStatus.setOrders(orders);
+            ordersDtoWithOrdersStatus.setOrders(validSpecialistSuggestionDto.getOrders());
             ordersDtoWithOrdersStatus.setOrderStatus(OrderStatus.ORDER_WAITING_FOR_SPECIALIST_SELECTION);
             SpecialistSuggestion specialistSuggestion = SpecialistSuggestion.builder()
-                    .specialist(specialist)
+                    .specialist(validSpecialistSuggestionDto.getSpecialist())
                     .order(ordersService.updateOrderToNextLevel(ordersDtoWithOrdersStatus))
                     .DateOfSuggestion(LocalDate.now())
                     .TimeOfSuggestion(LocalTime.now())
-                    .TimeOfStartWork(LocalTime.of(hour, minutes, 0))
-                    .DateOfStartWork(LocalDate.of(year, month, day))
-                    .durationOfWorkPerHour(workTimePerHour)
-                    .proposedPrice(subDuty.getBasePrice() + proposedPrice)
+                    .TimeOfStartWork(LocalTime.of(validSpecialistSuggestionDto.getHour(), validSpecialistSuggestionDto.getMinutes(), 0))
+                    .DateOfStartWork(LocalDate.of(validSpecialistSuggestionDto.getYear(), validSpecialistSuggestionDto.getMonth(), validSpecialistSuggestionDto.getDay()))
+                    .durationOfWorkPerHour(validSpecialistSuggestionDto.getWorkTimePerHour())
+                    .proposedPrice(validSpecialistSuggestionDto.getSubDuty().getBasePrice() + validSpecialistSuggestionDto.getProposedPrice())
                     .build();
             return submitSpecialistSuggestion(specialistSuggestion);
         } catch (CustomException ce) {
@@ -76,21 +86,25 @@ public class SpecialistSuggestionServiceImpl implements SpecialistSuggestionServ
     }
 
     @Override
-    public List<SpecialistSuggestion> findCustomerOrderSuggestionOnPrice(CustomerDto customerDto) {
-        return specialistSuggestionRepository.findCustomerOrderSuggestionOnPrice(customerMapper.customerDtoToCustomer(customerDto));
+    public List<SpecialistSuggestionDto> findCustomerOrderSuggestionOnPrice(CustomerDto customerDto) {
+        Collection<SpecialistSuggestionDto> specialistSuggestionDtoCollection = SpecialistSuggestionMapper.
+                specialistSuggestionCollectionToSpecialistSuggestionCollectionDto(specialistSuggestionRepository.findCustomerOrderSuggestionOnPrice(customerMapper.customerDtoToCustomer(customerDto)));
+    return new ArrayList<>(specialistSuggestionDtoCollection);
     }
     @Override
-    public List<SpecialistSuggestion> findCustomerOrderSuggestionOnScoreOfSpecialist(CustomerDto customerDto) {
-        return specialistSuggestionRepository.findCustomerOrderSuggestionOnScoreOfSpecialist(customerMapper.customerDtoToCustomer(customerDto));
+    public List<SpecialistSuggestionDto> findCustomerOrderSuggestionOnScoreOfSpecialist(CustomerDto customerDto) {
+        Collection<SpecialistSuggestionDto> specialistSuggestionDtoCollection = SpecialistSuggestionMapper.
+                specialistSuggestionCollectionToSpecialistSuggestionCollectionDto( specialistSuggestionRepository.findCustomerOrderSuggestionOnScoreOfSpecialist(customerMapper.customerDtoToCustomer(customerDto)));
+        return new ArrayList<>(specialistSuggestionDtoCollection);
     }
     @Override
-    public ProjectResponse changeStatusOrderToWaitingForSpecialistToWorkplace(Orders orders, Specialist specialist) {
-        orders.setSpecialist(specialist);
+    public Boolean changeStatusOrderToWaitingForSpecialistToWorkplace(StatusOrderSpecialistSuggestionDtoWithOrderAndSpecialist statusOrderSpecialistSuggestionDtoWithOrderAndSpecialist) {
+        statusOrderSpecialistSuggestionDtoWithOrderAndSpecialist.getOrders().setSpecialist(statusOrderSpecialistSuggestionDtoWithOrderAndSpecialist.getSpecialist());
         OrdersDtoWithOrdersStatus ordersDtoWithOrdersStatus = new OrdersDtoWithOrdersStatus();
-        ordersDtoWithOrdersStatus.setOrders(orders);
+        ordersDtoWithOrdersStatus.setOrders(statusOrderSpecialistSuggestionDtoWithOrderAndSpecialist.getOrders());
         ordersDtoWithOrdersStatus.setOrderStatus(OrderStatus.ORDER_WAITING_FOR_SPECIALIST_TO_WORKPLACE);
         ordersService.updateOrderToNextLevel(ordersDtoWithOrdersStatus);
-        return new ProjectResponse("202", "status changed");
+        return true;
     }
 
     @Override
@@ -104,11 +118,11 @@ public class SpecialistSuggestionServiceImpl implements SpecialistSuggestionServ
     }
 
     @Override
-    public ProjectResponse changeStatusOrderToStarted(Orders orders, SpecialistSuggestion specialistSuggestion) {
+    public Boolean changeStatusOrderToStarted( StatusOrderSpecialistSuggestionDto statusOrderSpecialistSuggestionDto) {
         try {
-            if (specialistSuggestion.getSpecialistSelectionOfOrder() == SpecialistSelectionOfOrder.SELECTED) {
+            if (statusOrderSpecialistSuggestionDto.getSpecialistSuggestion().getSpecialistSelectionOfOrder() == SpecialistSelectionOfOrder.SELECTED) {
                 OrdersDtoWithOrdersStatus ordersDtoWithOrdersStatus = new OrdersDtoWithOrdersStatus();
-                ordersDtoWithOrdersStatus.setOrders(orders);
+                ordersDtoWithOrdersStatus.setOrders(statusOrderSpecialistSuggestionDto.getOrders());
                 ordersDtoWithOrdersStatus.setOrderStatus( OrderStatus.ORDER_STARTED);
                 ordersService.updateOrderToNextLevel(ordersDtoWithOrdersStatus);
             } else {
@@ -116,17 +130,18 @@ public class SpecialistSuggestionServiceImpl implements SpecialistSuggestionServ
                         " order to started in this level");
             }
         } catch (CustomException ce) {
-            return new ProjectResponse("500", ce.getMessage());
+            throw new CustomException("customer not permission change status of this" +
+                    " order to started in this level");
         }
-        return new ProjectResponse("202", "status changed");
+        return true;
     }
 
     @Override
-    public ProjectResponse changeStatusOrderToDone(Orders orders) {
+    public Boolean changeStatusOrderToDone(OrdersDto ordersDto) {
         try {
-            if (orders.getOrderStatus() == OrderStatus.ORDER_STARTED) {
+            if (OrdersMapper.ordersDtoToOrders(ordersDto).getOrderStatus() == OrderStatus.ORDER_STARTED) {
                 OrdersDtoWithOrdersStatus ordersDtoWithOrdersStatus = new OrdersDtoWithOrdersStatus();
-                ordersDtoWithOrdersStatus.setOrders(orders);
+                ordersDtoWithOrdersStatus.setOrders(OrdersMapper.ordersDtoToOrders(ordersDto));
                 ordersDtoWithOrdersStatus.setOrderStatus(OrderStatus.ORDER_DONE);
                 ordersService.updateOrderToNextLevel(ordersDtoWithOrdersStatus);
             } else {
@@ -134,16 +149,52 @@ public class SpecialistSuggestionServiceImpl implements SpecialistSuggestionServ
                         " order to started in this level");
             }
         } catch (CustomException ce) {
-            return new ProjectResponse("500", ce.getMessage());
+            throw new CustomException("customer not permission change status of this" +
+                    " order to started in this level");
         }
-        return new ProjectResponse("202", "status changed");
+        return true;
 
+    }
+
+    @Override
+    public Boolean CheckTimeOfWork(SpecialistSuggestionDto specialistSuggestionDto) {
+        try {
+            LocalDate temporaryDate=LocalDate.now();
+            LocalTime temporaryTime = LocalTime.now();
+            if(temporaryDate.getDayOfMonth()>specialistSuggestionDto.getDateOfStartWork().getDayOfMonth()){
+                System.out.println("timeComparison: ");
+                Specialist specialist = specialistSuggestionDto.getSpecialist();
+                SpecialistScoreDto specialistScoreDto = new SpecialistScoreDto();
+                specialistScoreDto.setSpecialist(specialist);
+                System.out.println("sssss"+specialist.getScore());
+                int newScore=((specialist.getScore())-24);
+                specialistScoreDto.setScore(newScore);
+                specialistService.updateSpecialistScore(specialistScoreDto);
+                return true;
+            }
+            int timeComparison = temporaryTime.compareTo(specialistSuggestionDto.getTimeOfStartWork());
+
+            if (timeComparison > specialistSuggestionDto.getDurationOfWorkPerHour()) {
+                System.out.println("teeeeeeest");
+                int timeError = timeComparison / specialistSuggestionDto.getDurationOfWorkPerHour();
+                Specialist specialist = specialistSuggestionDto.getSpecialist();
+                SpecialistScoreDto specialistScoreDto = new SpecialistScoreDto();
+                specialistScoreDto.setSpecialist(specialist);
+                specialistScoreDto.setScore(specialist.getScore() - timeError);
+                specialistService.updateSpecialistScore(specialistScoreDto);
+                return true;
+            }
+        }catch (CustomException ce){
+            throw new CustomException("score is not updated");
+        }
+        return false;
     }
 
 
     @Override
-    public boolean findSuggestWithThisSpecialistAndOrder(Specialist specialist, Orders orders) {
-        return specialistSuggestionRepository.findSuggestWithThisSpecialistAndOrder(specialist, orders).isEmpty();
+    public Boolean findSuggestWithThisSpecialistAndOrder(StatusOrderSpecialistSuggestionDtoWithOrderAndSpecialist statusOrderSpecialistSuggestionDtoWithOrderAndSpecialist) {
+        return specialistSuggestionRepository.findSuggestWithThisSpecialistAndOrder(statusOrderSpecialistSuggestionDtoWithOrderAndSpecialist.getSpecialist(),
+                statusOrderSpecialistSuggestionDtoWithOrderAndSpecialist.getOrders()).isEmpty();
     }
 
 

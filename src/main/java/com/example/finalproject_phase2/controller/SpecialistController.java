@@ -27,6 +27,7 @@ public class SpecialistController {
     }
     @PostMapping("/signUp")
     public ResponseEntity<SpecialistDto> addSpecialist(@RequestBody @Valid SpecialistDto specialistDto) {
+        System.out.println(specialistDto);
         SpecialistDto specialistDtoCandidate = specialistService.addSpecialist(specialistDto);
         if (specialistDtoCandidate!=null)return new ResponseEntity<>(specialistDtoCandidate, HttpStatus.ACCEPTED);
         else throw new CustomException("specialist not saved");

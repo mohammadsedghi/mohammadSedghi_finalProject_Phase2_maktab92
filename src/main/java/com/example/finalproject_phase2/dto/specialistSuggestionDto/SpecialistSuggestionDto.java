@@ -19,9 +19,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SpecialistSuggestionDto {
-    @ManyToOne
     Specialist specialist;
-    @ManyToOne
     Orders order;
     @NotNull(message = "DateOfSuggestion must be have value")
     LocalDate DateOfSuggestion;
@@ -36,7 +34,6 @@ public class SpecialistSuggestionDto {
     LocalDate DateOfStartWork;
     @NotNull(message = "durationOfWorkPerHour must be have value")
     Integer durationOfWorkPerHour;
-    @Enumerated(EnumType.STRING)
     SpecialistSelectionOfOrder specialistSelectionOfOrder;
 
     @Builder

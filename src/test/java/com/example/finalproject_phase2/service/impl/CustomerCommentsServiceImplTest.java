@@ -5,6 +5,7 @@ import com.example.finalproject_phase2.entity.Orders;
 import com.example.finalproject_phase2.entity.Specialist;
 import com.example.finalproject_phase2.service.CustomerCommentsService;
 import com.example.finalproject_phase2.service.OrdersService;
+import com.example.finalproject_phase2.service.impl.mapper.CustomerCommentsMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -29,12 +30,15 @@ class CustomerCommentsServiceImplTest {
 
     @Test
     void submitCustomerCommentsService() {
+
         Optional<Orders> order = ordersService.findById(1l);
         CustomerComments customerComments= CustomerComments.builder()
                 .orders(order.get())
                 .description("customerComments")
                 .score(3)
                 .build();
- assertEquals("202",customerCommentsService.submitCustomerCommentsService(customerComments).getCode());
+
+ assertEquals(true,customerCommentsService.submitCustomerCommentsService(
+         CustomerCommentsMapper.customerCommentsToCustomerCommentsDto(customerComments)));
     }
 }

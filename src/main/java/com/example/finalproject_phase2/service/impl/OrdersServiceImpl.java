@@ -66,6 +66,7 @@ public class OrdersServiceImpl implements OrdersService {
     @Override
     public Orders updateOrderToNextLevel(OrdersDtoWithOrdersStatus ordersDtoWithOrdersStatus) {
         ordersDtoWithOrdersStatus.getOrders().setOrderStatus(ordersDtoWithOrdersStatus.getOrderStatus());
+        ordersDtoWithOrdersStatus.getOrders().setId(1l);
         ordersRepository.save(ordersDtoWithOrdersStatus.getOrders());
         return ordersDtoWithOrdersStatus.getOrders();
     }

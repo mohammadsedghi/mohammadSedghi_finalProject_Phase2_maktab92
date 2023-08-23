@@ -6,6 +6,7 @@ import com.example.finalproject_phase2.dto.customerDto.CustomerLoginDto;
 import com.example.finalproject_phase2.dto.customerDto.CustomerDto;
 import com.example.finalproject_phase2.entity.Customer;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CustomerService {
@@ -14,4 +15,5 @@ public interface CustomerService {
     String encryptCustomerPassword(String password);
     CustomerDto loginByEmailAndPassword(CustomerLoginDto customerLoginDto);
     boolean changePassword(CustomerChangePasswordDto customerChangePasswordDto);
+    List<Customer> searchCustomer(CustomerDto customerDto);
 }

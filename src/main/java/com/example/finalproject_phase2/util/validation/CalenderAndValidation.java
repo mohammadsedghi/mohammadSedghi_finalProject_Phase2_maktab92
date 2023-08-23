@@ -15,7 +15,7 @@ public class CalenderAndValidation {
             temporaryDate=LocalDate.of(year, month, day);
             temporaryTime=LocalTime.of(hour, minutes, 0);
             int dateComparison = temporaryDate.compareTo(localDateOfCustomerEntered);
-            int timeComparison = temporaryDate.compareTo(localDateOfCustomerEntered);
+            int timeComparison = temporaryTime.compareTo(localTimeOfCustomerEntered);
             if (dateComparison > 0||dateComparison==0) {
                 if (timeComparison>0||timeComparison==0)
                 {return true;

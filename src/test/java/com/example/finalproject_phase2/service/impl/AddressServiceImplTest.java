@@ -13,6 +13,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class AddressServiceImplTest {
     @Autowired
     AddressService addressService;
+    @Autowired
+    AddressMapper addressMapper;
     AddressDto addressDto;
     MotherObject motherObject;
 
@@ -26,6 +28,6 @@ class AddressServiceImplTest {
     @Test
     @Order(1)
     void createAddress() {
-        assertEquals(AddressMapper.addressDtoToAddress(motherObject.getValidAddressDto()),addressService.createAddress(motherObject.getValidAddressDto()));
+        assertEquals(addressMapper.addressDtoToAddress(motherObject.getValidAddressDto()),addressService.createAddress(motherObject.getValidAddressDto()));
     }
 }
