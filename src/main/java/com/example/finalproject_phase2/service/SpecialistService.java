@@ -6,6 +6,7 @@ import com.example.finalproject_phase2.dto.specialistDto.*;
 import com.example.finalproject_phase2.entity.Specialist;
 import com.example.finalproject_phase2.entity.SubDuty;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface SpecialistService {
@@ -20,4 +21,5 @@ public interface SpecialistService {
      void convertByteArrayToImage (ConvertImageDto convertImageDto );
      Specialist findByEmail(String email);
     Integer updateSpecialistScore(SpecialistScoreDto specialistScoreDto);
+     List<Specialist> searchSpecialist(SpecialistDto specialistDto);
 }

@@ -1,38 +1,48 @@
 package com.example.finalproject_phase2.controller;
 
-import com.example.finalproject_phase2.entity.Customer;
+import com.example.finalproject_phase2.custom_exception.CustomException;
+import com.example.finalproject_phase2.dto.specialistSuggestionDto.SpecialistSuggestionDto;
+import com.example.finalproject_phase2.dto.subDutyDto.SubDutyDto;
 import com.example.finalproject_phase2.service.CustomerService;
 import com.example.finalproject_phase2.service.WalletService;
+import com.example.finalproject_phase2.service.impl.mapper.SecondSpecialistMapper;
+import com.example.finalproject_phase2.util.CheckValidation;
+import com.example.finalproject_phase2.util.CustomRegex;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.time.LocalTime;
 import java.util.Random;
 
 @Controller
 @RequestMapping("/wallet")
 public class WalletController {
-    String captchaText;
+
+    private String captchaText;
+    private LocalTime localTime;
+    private CustomRegex customRegex=new CustomRegex();
     private final WalletService walletService;
-    private final CustomerService customerService;
     @Autowired
-    public WalletController(WalletService walletService, CustomerService customerService) {
+    public WalletController(WalletService walletService) {
         this.walletService = walletService;
-        this.customerService = customerService;
     }
+
     @RequestMapping(value = "/payment", method = RequestMethod.GET)
-    public String home() {
+    public String payment() {
+        localTime=LocalTime.now();
         return "index";
     }
 
@@ -41,32 +51,53 @@ public class WalletController {
     public String sendData(@RequestParam String cardNumber1, @RequestParam String cardNumber2
             , @RequestParam String cardNumber3, @RequestParam String cardNumber4, @RequestParam String cvv2,
                            @RequestParam String month, @RequestParam String year,
-                           @RequestParam String captcha, @RequestParam String password, Model model) {
+                           @RequestParam String captcha, @RequestParam String password,
+                           Model model) {
         String response;
-        if (cardNumber1 != null && !cardNumber1.isEmpty() && cardNumber2 != null && !cardNumber2.isEmpty()) {
-            System.out.println(cardNumber1);
-            System.out.println(cardNumber2);
-            response = "Received data 1: " + cardNumber1 + ", Received data 2: " + cardNumber2;
-        } else {
-            return "No data received.";
+       if (customRegex.checkOneInputIsValid(cardNumber1,customRegex.getValidDigitCardNumberPartOne())){
+           if (customRegex.checkOneInputIsValid(cardNumber2,customRegex.getValidCardNumber())){
+              if (customRegex.checkOneInputIsValid(cardNumber3,customRegex.getValidCardNumber())){
+                  if ( customRegex.checkOneInputIsValid(cardNumber4,customRegex.getValidCardNumber())){
+                        if (customRegex.checkOneInputIsValid(cvv2,customRegex.getValidCardNumber())){
+                            if (customRegex.checkOneInputIsValid(month,customRegex.getValidCardNumberMonth())){
+                                if (customRegex.checkOneInputIsValid(year,customRegex.getValidCardNumberYear())){
+                                    if (captchaText.equals(captcha)){
+                                        if (password.equals("1234")){
+                                            response="true";
+                                        }else response="password is incorrect";
+                                    }else response="captcha is incorrect";
+                                }else response="year of date is incorrect";
+                            }else response="month of date is incorrect";
+                        }else response="cvv2 is incorrect";
+                  }else response="cardNumber is incorrect";
+              }else response="cardNumber is incorrect";
+           }else response="cardNumber is incorrect";
+       }else response="cardNumber is incorrect";
+        if (LocalTime.now().getMinute()-localTime.getMinute()>=5){
+            response="false";
+        }
+        if (response.equals("true")){
+            walletService.payWithOnlinePayment(CheckValidation.memberTypespecialist,100d);
         }
         model.addAttribute("response", response);
-        return captchaText;
-//        return "index :: #response";
+        return response;
+          }
+    @GetMapping("/after")
+    public String afterPage() {
+        return "afterPayment";
+    }
+    @GetMapping("/endTime")
+    public String anotherPage() {
+        return "endTime";
     }
 
     @GetMapping("/captcha")
     public void captcha(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String captchaText = generateCaptchaText(6); // 6 characters
         this.captchaText=captchaText;
-        // Store the CAPTCHA text in the user's session
         HttpSession session = request.getSession();
         session.setAttribute("captcha", captchaText);
-
-        // Create an image with the CAPTCHA text
         BufferedImage captchaImage = generateCaptchaImage(captchaText);
-
-        // Send the image to the client
         response.setContentType(MimeTypeUtils.IMAGE_PNG_VALUE);
         OutputStream out = response.getOutputStream();
         ImageIO.write(captchaImage, "png", out);
@@ -89,18 +120,17 @@ public class WalletController {
         int height = 50;
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Graphics2D g2d = image.createGraphics();
-
-        // Set background color
         g2d.setColor(Color.WHITE);
         g2d.fillRect(0, 0, width, height);
-
-        // Draw text
         g2d.setColor(Color.BLACK);
         g2d.setFont(new Font("Arial", Font.BOLD, 30));
         g2d.drawString(text, 30, 35);
-
         g2d.dispose();
         return image;
+    }
+    @PostMapping("/payWithWallet")
+    public ResponseEntity<String> payWithWallet(@RequestBody SpecialistSuggestionDto specialistSuggestionDto) {
+       return new ResponseEntity<>( walletService.payWithWallet(specialistSuggestionDto), HttpStatus.ACCEPTED);
     }
 }
 

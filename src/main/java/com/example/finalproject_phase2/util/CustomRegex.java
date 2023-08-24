@@ -10,6 +10,10 @@ import java.util.regex.Pattern;
 public class CustomRegex {
     String validStr = "^[a-zA-Z]+$";
     String validDigit = "^\\d+$";
+    String validDigitCardNumberPartOne = "^[1-9]\\d{3}$";
+    String validCardNumber="^\\d{4}$";
+    String validCardNumberMonth="^(0[1-9]|1[0-2])$";
+    String validCardNumberYear="^(0[1-9]|[0-9][0-9])$";
     String validPrice = "^\\d+(\\.\\d{1,2})?$";
     String validDigitStr = "^[a-zA-Z0-9]+$";
     String validPositiveDigit = "^[+]?\\d+([.]\\d+)?$";

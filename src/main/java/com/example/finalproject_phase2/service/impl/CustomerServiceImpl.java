@@ -131,18 +131,18 @@ public class CustomerServiceImpl implements CustomerService {
         return true;
     }
 
-    public static Specification<Customer> hasCustomerWithThisEmail(String email) {
+    public  Specification<Customer> hasCustomerWithThisEmail(String email) {
         return (customer, cq, cb) -> cb.equal(customer.get("email"), email);
     }
 
-    public static Specification<Customer> hasCustomerWithThisFirstName(String firstName) {
+    public  Specification<Customer> hasCustomerWithThisFirstName(String firstName) {
         return (customer, cq, cb) -> cb.like(customer.get("firstName"), "%" + firstName + "%");
     }
 
-    public static Specification<Customer> hasCustomerWithThisLastName(String lastName) {
+    public  Specification<Customer> hasCustomerWithThisLastName(String lastName) {
         return (customer, cq, cb) -> cb.like(customer.get("lastName"), "%" + lastName + "%");
     }
-    public static Specification<Customer> hasCustomerWithThisNationalId(String nationalId) {
+    public  Specification<Customer> hasCustomerWithThisNationalId(String nationalId) {
         return (customer, cq, cb) -> cb.like(customer.get("nationalId"), "%" + nationalId + "%");
     }
 

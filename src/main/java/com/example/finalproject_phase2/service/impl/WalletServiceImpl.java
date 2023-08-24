@@ -1,6 +1,7 @@
 package com.example.finalproject_phase2.service.impl;
 
 import com.example.finalproject_phase2.custom_exception.CustomException;
+import com.example.finalproject_phase2.dto.specialistDto.SpecialistDto;
 import com.example.finalproject_phase2.dto.specialistSuggestionDto.SpecialistSuggestionDto;
 import com.example.finalproject_phase2.entity.Customer;
 import com.example.finalproject_phase2.entity.Specialist;
@@ -42,21 +43,38 @@ public class WalletServiceImpl implements WalletService {
         walletRepository.save(customerWallet);
         walletRepository.save(specialistWallet);
     }
+    public void withDrawOnline( Specialist specialist,Double price) {
+        Wallet specialistWallet=specialist.getWallet();
+        Double specialistBalance = specialistWallet.getBalance();
+        Double calcCostOFOrder=(price*70)/100;
+        specialistBalance=specialistBalance+calcCostOFOrder;
+        specialistWallet.setBalance(specialistBalance);
+        walletRepository.save(specialistWallet);
+    }
 
     @Override
     public String payWithWallet(SpecialistSuggestionDto specialistSuggestionDto) {
         try {
+            if (specialistSuggestionDto.getOrder().getCustomer().getWallet().getBalance()<
+            specialistSuggestionDto.getProposedPrice()){
+                throw new CustomException("wallet have not enough balance");
+            }
             withDraw(specialistSuggestionDto.getOrder().getCustomer(),
                     specialistSuggestionDto.getSpecialist(),
                     specialistSuggestionDto.getProposedPrice());
             return "transaction is success";
         }catch (CustomException ce){
-            throw new CustomException("transaction is failed");
+            throw new CustomException(ce.getMessage());
         }
     }
 
     @Override
-    public String payWithOnlinePayment(SpecialistSuggestionDto specialistSuggestionDto) {
-        return null;
+    public String payWithOnlinePayment(Specialist specialist,Double proposedPrice ) {
+        try {
+            withDrawOnline( specialist, proposedPrice);
+            return "transaction is success";
+        }catch (CustomException ce){
+            throw new CustomException("transaction is failed");
+        }
     }
 }

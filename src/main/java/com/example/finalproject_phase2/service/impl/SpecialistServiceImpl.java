@@ -3,6 +3,7 @@ package com.example.finalproject_phase2.service.impl;
 import com.example.finalproject_phase2.custom_exception.CustomException;
 import com.example.finalproject_phase2.custom_exception.CustomInputOutputException;
 import com.example.finalproject_phase2.custom_exception.CustomNoResultException;
+import com.example.finalproject_phase2.dto.customerDto.CustomerDto;
 import com.example.finalproject_phase2.dto.specialistDto.*;
 import com.example.finalproject_phase2.entity.Customer;
 import com.example.finalproject_phase2.entity.Specialist;
@@ -17,6 +18,7 @@ import com.example.finalproject_phase2.util.hash_password.EncryptPassword;
 import com.example.finalproject_phase2.entity.enumeration.SpecialistRegisterStatus;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -25,6 +27,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
+
+import static org.springframework.data.jpa.domain.Specification.where;
 
 @Service
 public class SpecialistServiceImpl implements SpecialistService {
@@ -229,5 +233,31 @@ public class SpecialistServiceImpl implements SpecialistService {
         System.out.println("fffffffffff"+specialistScoreDto.getSpecialist().getScore());
         specialistRepository.save(specialistScoreDto.getSpecialist());
         return specialistScoreDto.getScore();
+    }
+
+
+    public Specification<Specialist> hasCustomerWithThisEmail(String email) {
+        return (specialist, cq, cb) -> cb.equal(specialist.get("email"), email);
+    }
+
+    public  Specification<Specialist> hasCustomerWithThisFirstName(String firstName) {
+        return (specialist, cq, cb) -> cb.like(specialist.get("firstName"), "%" + firstName + "%");
+    }
+
+    public  Specification<Specialist> hasCustomerWithThisLastName(String lastName) {
+        return (specialist, cq, cb) -> cb.like(specialist.get("lastName"), "%" + lastName + "%");
+    }
+    public  Specification<Specialist> hasCustomerWithThisNationalId(String nationalId) {
+        return (specialist, cq, cb) -> cb.like(specialist.get("nationalId"), "%" + nationalId + "%");
+    }
+
+    @Override
+    public List<Specialist> searchSpecialist(SpecialistDto specialistDto) {
+        Specialist searchSpecialist = SecondSpecialistMapper.specialistDtoToSpecialist(specialistDto);
+        return specialistRepository.findAll(where(hasCustomerWithThisEmail(searchSpecialist.getEmail())).
+                and(hasCustomerWithThisFirstName(searchSpecialist.getFirstName())).
+                and(hasCustomerWithThisLastName(searchSpecialist.getLastName()))
+                .and(hasCustomerWithThisNationalId(searchSpecialist.getNationalId()))
+        );
     }
 }

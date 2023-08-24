@@ -6,8 +6,10 @@ import com.example.finalproject_phase2.dto.specialistDto.ConvertImageDto;
 import com.example.finalproject_phase2.dto.specialistDto.SpecialistDto;
 import com.example.finalproject_phase2.dto.specialistDto.SpecialistLoginDto;
 import com.example.finalproject_phase2.dto.specialistDto.SpecialistScoreDto;
+import com.example.finalproject_phase2.entity.Specialist;
 import com.example.finalproject_phase2.service.SpecialistService;
 import com.example.finalproject_phase2.service.impl.mapper.SecondSpecialistMapper;
+import com.example.finalproject_phase2.util.CheckValidation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/specialist")
@@ -52,13 +56,22 @@ public class SpecialistController {
     }
     @PostMapping("/showImage")
     public ResponseEntity<String> showImage(@RequestBody @Valid ConvertImageDto convertImageDto) {
-      try {
-          specialistService.convertByteArrayToImage(convertImageDto);
-          return new ResponseEntity<>("image is converted", HttpStatus.ACCEPTED);
-      }catch(CustomException ce){
-          throw new CustomException(ce.getMessage());
-      }
-
-
+        try {
+            specialistService.convertByteArrayToImage(convertImageDto);
+            return new ResponseEntity<>("image is converted", HttpStatus.ACCEPTED);
+        } catch (CustomException ce) {
+            throw new CustomException(ce.getMessage());
+        }
     }
+        @PostMapping("/search")
+        public ResponseEntity<List<Specialist>> searchSpecialist(@RequestBody SpecialistDto specialistDto) {
+            List<Specialist> specialists = specialistService.searchSpecialist(specialistDto);
+           CheckValidation.memberTypespecialist= specialists.get(0);
+            System.out.println(CheckValidation.memberTypespecialist.getEmail());
+            if (specialists!=null)return new ResponseEntity<>(specialists, HttpStatus.ACCEPTED);
+            else throw new CustomException("specialist not saved");
+        }
+
+
+
 }

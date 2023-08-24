@@ -149,6 +149,9 @@
 <!--</script>-->
 
 <script th:inline="javascript">
+    // setTimeout(function() {
+    //     window.location.href = '/wallet/endTime';
+    // }, 1 * 60 * 1000);
     $(document).ready(function () {
         $("#sendButton").click(function () {
             var inputData = $("#inputData").val();
@@ -166,10 +169,16 @@
                 data: {cardNumber1: inputData , cardNumber2: inputData2 ,cardNumber3:inputData3,cardNumber4:inputData4,cvv2:cvv2
                     ,month:month,year:year ,captcha:captcha,password:pass},
                 success: function (response) {
-                    $("#response").html(response);
+                    if (response === "false") {
+                        window.location.href = '/wallet/endTime';
+                    } else if (response==="true"){
+                        window.location.href = '/wallet/after';}
+                        $("#response").html(response);
+
                 },
                 error: function () {
-                    $("#response").html("An error occurred.");
+                        $("#response").html("An error occurred.");
+
                 }
             });
         });
