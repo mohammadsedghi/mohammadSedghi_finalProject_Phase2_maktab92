@@ -68,8 +68,7 @@ public class SpecialistController {
             List<Specialist> specialists = specialistService.searchSpecialist(specialistDto);
            CheckValidation.memberTypespecialist= specialists.get(0);
             System.out.println(CheckValidation.memberTypespecialist.getEmail());
-            if (specialists!=null)return new ResponseEntity<>(specialists, HttpStatus.ACCEPTED);
-            else throw new CustomException("specialist not saved");
+            return new ResponseEntity<>(specialists, HttpStatus.ACCEPTED);
         }
 
 

@@ -18,4 +18,5 @@ public interface SpecialistRepository extends JpaRepository<Specialist,Long>, Jp
     Collection<Specialist> showUnConfirmSpecialist(SpecialistRegisterStatus specialistRegisterStatus);
     @Query("select s from Specialist s where s.status=:specialistRegisterStatus")
     Collection<Specialist> showConfirmSpecialist(SpecialistRegisterStatus specialistRegisterStatus);
+
 }

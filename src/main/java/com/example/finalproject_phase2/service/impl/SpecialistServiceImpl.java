@@ -228,9 +228,11 @@ public class SpecialistServiceImpl implements SpecialistService {
 
     @Override
     public Integer updateSpecialistScore(SpecialistScoreDto specialistScoreDto) {
-       // specialistScoreDto.getSpecialist().setScore(specialistScoreDto.getScore());
         specialistScoreDto.getSpecialist().setScore(specialistScoreDto.getScore());
         System.out.println("fffffffffff"+specialistScoreDto.getSpecialist().getScore());
+        if (specialistScoreDto.getSpecialist().getScore()<0){
+        specialistScoreDto.getSpecialist().setStatus(SpecialistRegisterStatus.WAITING_FOR_CONFIRM);
+        }
         specialistRepository.save(specialistScoreDto.getSpecialist());
         return specialistScoreDto.getScore();
     }

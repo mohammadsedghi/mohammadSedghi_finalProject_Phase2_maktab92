@@ -1,10 +1,9 @@
 package com.example.finalproject_phase2.controller;
 
-import com.example.finalproject_phase2.custom_exception.CustomException;
-import com.example.finalproject_phase2.dto.adminDto.AdminDto;
-import com.example.finalproject_phase2.dto.adminDto.AdminLoginDto;
 import com.example.finalproject_phase2.dto.customerCommentsDto.CustomerCommentsDto;
+import com.example.finalproject_phase2.dto.specialistDto.SpecialistDto;
 import com.example.finalproject_phase2.service.CustomerCommentsService;
+import com.example.finalproject_phase2.service.impl.mapper.SecondSpecialistMapper;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,5 +27,12 @@ public class CustomerCommentsController {
     public ResponseEntity<Boolean> submitCustomerComments(@RequestBody @Valid CustomerCommentsDto customerCommentsDto) {
         customerCommentsService.submitCustomerCommentsService(customerCommentsDto);
             return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/showScore")
+    public ResponseEntity<Integer> showScore(@RequestBody @Valid SpecialistDto specialistDto ) {
+        Integer score = customerCommentsService.showScoreOfLastCustomerCommentsThatThisSpecialistIsExist(
+                SecondSpecialistMapper.specialistDtoToSpecialist(specialistDto));
+        return new ResponseEntity<>(score, HttpStatus.ACCEPTED);
     }
 }

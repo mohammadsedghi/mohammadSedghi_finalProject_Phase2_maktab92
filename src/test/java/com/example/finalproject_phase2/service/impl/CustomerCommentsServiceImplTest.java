@@ -5,6 +5,7 @@ import com.example.finalproject_phase2.entity.Orders;
 import com.example.finalproject_phase2.entity.Specialist;
 import com.example.finalproject_phase2.service.CustomerCommentsService;
 import com.example.finalproject_phase2.service.OrdersService;
+import com.example.finalproject_phase2.service.SpecialistService;
 import com.example.finalproject_phase2.service.impl.mapper.CustomerCommentsMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
@@ -24,6 +25,8 @@ class CustomerCommentsServiceImplTest {
     CustomerCommentsService customerCommentsService;
     @Autowired
     OrdersService ordersService;
+    @Autowired
+    SpecialistService specialistService;
     @BeforeEach
     void setUp() {
     }
@@ -40,5 +43,15 @@ class CustomerCommentsServiceImplTest {
 
  assertEquals(true,customerCommentsService.submitCustomerCommentsService(
          CustomerCommentsMapper.customerCommentsToCustomerCommentsDto(customerComments)));
+
+    }
+    @Test
+    void searchNumberOFCustomerComments(){
+        //CustomerComments customerComments=customerCommentsService.findById(1l).get();
+        Specialist specialist = specialistService.findByEmail("ali@gmail.com");
+        Integer number = customerCommentsService.findNumberOFCustomerCommentsThatSpecialistIsExist(specialist);
+        System.out.println(number);
+
+
     }
 }
