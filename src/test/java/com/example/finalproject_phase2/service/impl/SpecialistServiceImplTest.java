@@ -12,7 +12,7 @@ import com.example.finalproject_phase2.service.SpecialistService;
 import com.example.finalproject_phase2.service.SubDutyService;
 import com.example.finalproject_phase2.service.WalletService;
 import com.example.finalproject_phase2.service.impl.mapper.DutyMapper;
-import com.example.finalproject_phase2.service.impl.mapper.SecondSpecialistMapper;
+import com.example.finalproject_phase2.service.impl.mapper.SpecialistMapper;
 import com.example.finalproject_phase2.service.impl.mapper.SubDutyMapper;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
@@ -41,6 +41,8 @@ class SpecialistServiceImplTest {
     SubDutyService subDutyService;
     @Autowired
     WalletService walletService;
+    @Autowired
+    SpecialistMapper specialistMapper;
     Duty duty;
     SubDuty subDuty;
     MotherObject motherObject;
@@ -83,7 +85,7 @@ class SpecialistServiceImplTest {
         specialist.setPassword("123456al");
         specialist.setRegisterDate(LocalDate.now());
         specialist.setRegisterTime(LocalTime.now());
-        specialistService.addSpecialist(SecondSpecialistMapper.specialistToSpecialistDto(specialist));
+        specialistService.addSpecialist(specialistMapper.specialistToSpecialistDto(specialist));
         ConvertImageDto imageDto=new ConvertImageDto();
         imageDto.setSpecialist(specialist);
         imageDto.setFilePath("t.jpg");
@@ -104,7 +106,7 @@ class SpecialistServiceImplTest {
     @Order(3)
     void confirmSpecialistByAdmin() {
 
-        specialistService.confirmSpecialistByAdmin(SecondSpecialistMapper.specialistToSpecialistDto(specialistService.findByEmail("ali@gmail.com")));
+        specialistService.confirmSpecialistByAdmin(specialistMapper.specialistToSpecialistDto(specialistService.findByEmail("ali@gmail.com")));
     }
 
     @Test

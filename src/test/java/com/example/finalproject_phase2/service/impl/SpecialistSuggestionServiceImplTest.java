@@ -5,14 +5,12 @@ import com.example.finalproject_phase2.dto.specialistSuggestionDto.SpecialistSug
 import com.example.finalproject_phase2.dto.specialistSuggestionDto.StatusOrderSpecialistSuggestionDto;
 import com.example.finalproject_phase2.dto.specialistSuggestionDto.StatusOrderSpecialistSuggestionDtoWithOrderAndSpecialist;
 import com.example.finalproject_phase2.dto.specialistSuggestionDto.ValidSpecialistSuggestionDto;
-import com.example.finalproject_phase2.entity.Customer;
-import com.example.finalproject_phase2.entity.Specialist;
 import com.example.finalproject_phase2.entity.SpecialistSuggestion;
-import com.example.finalproject_phase2.entity.enumeration.OrderStatus;
 import com.example.finalproject_phase2.entity.enumeration.SpecialistSelectionOfOrder;
 import com.example.finalproject_phase2.service.*;
 import com.example.finalproject_phase2.service.impl.mapper.CustomerMapper;
 import com.example.finalproject_phase2.service.impl.mapper.OrdersMapper;
+import com.example.finalproject_phase2.service.impl.mapper.SpecialistMapper;
 import com.example.finalproject_phase2.service.impl.mapper.SpecialistSuggestionMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
@@ -20,8 +18,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -40,6 +36,10 @@ class SpecialistSuggestionServiceImplTest {
     SpecialistService specialistService;
     @Autowired
      CustomerService customerService;
+    @Autowired
+    SpecialistSuggestionMapper specialistSuggestionMapper;
+    @Autowired
+    OrdersMapper ordersMapper;
     @BeforeEach
     void setUp() {
 
@@ -122,19 +122,19 @@ class SpecialistSuggestionServiceImplTest {
    }
    @Test
     void changeStatusOrderToDone(){
-       OrdersDto ordersDto= OrdersMapper.ordersToOrdersDto(ordersService.findById(1l).get());
+       OrdersDto ordersDto= ordersMapper.ordersToOrdersDto(ordersService.findById(1l).get());
        assertEquals(true,specialistSuggestionService.changeStatusOrderToDone(ordersDto));
    }
    @Test
     void CheckTimeOfWork(){
 //        SpecialistSuggestionDto specialistSuggestionDto=new SpecialistSuggestionDto();
 //        specialistSuggestionDto.setSpecialist(specialistService.findByEmail("ali@gmail.com"));
-       SpecialistSuggestionDto specialistSuggestionDto = SpecialistSuggestionMapper.specialistSuggestionToSpecialistsuggestionDto(specialistSuggestionService.findById(2l));
+       SpecialistSuggestionDto specialistSuggestionDto = specialistSuggestionMapper.specialistSuggestionToSpecialistsuggestionDto(specialistSuggestionService.findById(2l));
        assertEquals(true,specialistSuggestionService.CheckTimeOfWork(specialistSuggestionDto));
    }
    @Test
     void payForSpecialistSuggestion(){
-        SpecialistSuggestionDto specialistSuggestionDto = SpecialistSuggestionMapper.specialistSuggestionToSpecialistsuggestionDto(specialistSuggestionService.findById(2l));
+        SpecialistSuggestionDto specialistSuggestionDto = specialistSuggestionMapper.specialistSuggestionToSpecialistsuggestionDto(specialistSuggestionService.findById(2l));
        assertEquals("transaction is success",walletService.payWithWallet(specialistSuggestionDto));
 
    }

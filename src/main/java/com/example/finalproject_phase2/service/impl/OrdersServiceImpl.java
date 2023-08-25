@@ -2,7 +2,6 @@ package com.example.finalproject_phase2.service.impl;
 
 import com.example.finalproject_phase2.custom_exception.CustomDuplicateInfoException;
 import com.example.finalproject_phase2.custom_exception.CustomException;
-import com.example.finalproject_phase2.dto.ProjectResponse;
 import com.example.finalproject_phase2.dto.customerDto.CustomerDto;
 import com.example.finalproject_phase2.dto.ordersDto.OrdersDto;
 import com.example.finalproject_phase2.dto.ordersDto.OrdersDtoWithCustomerAndSubDuty;
@@ -29,11 +28,13 @@ public class OrdersServiceImpl implements OrdersService {
     private final CustomerMapper customerMapper;
     private final SubDutyMapper subDutyMapper;
     CheckValidation checkValidation=new CheckValidation();
+    private final OrdersMapper ordersMapper;
     @Autowired
-    public OrdersServiceImpl(OrdersRepository ordersRepository, CustomerMapper customerMapper, SubDutyMapper subDutyMapper) {
+    public OrdersServiceImpl(OrdersRepository ordersRepository, CustomerMapper customerMapper, SubDutyMapper subDutyMapper, OrdersMapper ordersMapper) {
         this.ordersRepository = ordersRepository;
         this.customerMapper = customerMapper;
         this.subDutyMapper = subDutyMapper;
+        this.ordersMapper = ordersMapper;
     }
     @Override
     public OrdersDto submitOrder(OrdersWithPriceAndBasePrice ordersWithPriceAndBasePrice) {
@@ -55,7 +56,7 @@ public class OrdersServiceImpl implements OrdersService {
         } catch (CustomException ce) {
             return new OrdersDto();
         }
-        return OrdersMapper.ordersToOrdersDto(ordersWithPriceAndBasePrice.getOrders()) ;
+        return ordersMapper.ordersToOrdersDto(ordersWithPriceAndBasePrice.getOrders()) ;
     }
 
     @Override

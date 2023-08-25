@@ -3,7 +3,6 @@ package com.example.finalproject_phase2.service.impl;
 import com.example.finalproject_phase2.custom_exception.CustomException;
 import com.example.finalproject_phase2.custom_exception.CustomInputOutputException;
 import com.example.finalproject_phase2.custom_exception.CustomNoResultException;
-import com.example.finalproject_phase2.dto.customerDto.CustomerDto;
 import com.example.finalproject_phase2.dto.specialistDto.*;
 import com.example.finalproject_phase2.entity.Customer;
 import com.example.finalproject_phase2.entity.Specialist;
@@ -12,7 +11,7 @@ import com.example.finalproject_phase2.entity.Wallet;
 import com.example.finalproject_phase2.repository.SpecialistRepository;
 import com.example.finalproject_phase2.service.SpecialistService;
 import com.example.finalproject_phase2.service.WalletService;
-import com.example.finalproject_phase2.service.impl.mapper.SecondSpecialistMapper;
+import com.example.finalproject_phase2.service.impl.mapper.SpecialistMapper;
 import com.example.finalproject_phase2.util.CheckValidation;
 import com.example.finalproject_phase2.util.hash_password.EncryptPassword;
 import com.example.finalproject_phase2.entity.enumeration.SpecialistRegisterStatus;
@@ -33,12 +32,14 @@ import static org.springframework.data.jpa.domain.Specification.where;
 @Service
 public class SpecialistServiceImpl implements SpecialistService {
     private final SpecialistRepository specialistRepository;
+    private final SpecialistMapper specialistMapper;
     private final WalletService walletService;
     CheckValidation checkValidation = new CheckValidation();
 
     @Autowired
-    public SpecialistServiceImpl(SpecialistRepository specialistRepository, WalletService walletService) {
+    public SpecialistServiceImpl(SpecialistRepository specialistRepository, SpecialistMapper specialistMapper, WalletService walletService) {
         this.specialistRepository = specialistRepository;
+        this.specialistMapper = specialistMapper;
 
         this.walletService = walletService;
     }
@@ -53,7 +54,7 @@ public class SpecialistServiceImpl implements SpecialistService {
                     }, () -> {
                         Wallet wallet = walletService.createWallet();
                         specialistDto.setPassword(encryptSpecialistPassword(specialistDto.getPassword()));
-                        Specialist specialist = SecondSpecialistMapper.specialistDtoToSpecialist(specialistDto);
+                        Specialist specialist = specialistMapper.specialistDtoToSpecialist(specialistDto);
                        specialist.setWallet(wallet);
                        specialist.setStatus(SpecialistRegisterStatus.WAITING_FOR_CONFIRM);
                         specialist.setRegisterDate(LocalDate.now());
@@ -85,7 +86,7 @@ public class SpecialistServiceImpl implements SpecialistService {
             CheckValidation.memberTypeCustomer = new Customer();
             return new SpecialistDto();
         }
-        return SecondSpecialistMapper.specialistToSpecialistDto(CheckValidation.memberTypespecialist);
+        return specialistMapper.specialistToSpecialistDto(CheckValidation.memberTypespecialist);
     }
 
     @Override
@@ -97,9 +98,9 @@ public class SpecialistServiceImpl implements SpecialistService {
             } else {
                 for (Specialist specialistCandidate : unConfirmSpecialist
                 ) {
-                    if (specialistCandidate.equals(SecondSpecialistMapper.specialistDtoToSpecialist(specialistDto))) {
-                        SecondSpecialistMapper.specialistDtoToSpecialist(specialistDto).setStatus(SpecialistRegisterStatus.CONFIRM);
-                        specialistRepository.save(SecondSpecialistMapper.specialistDtoToSpecialist(specialistDto));
+                    if (specialistCandidate.equals(specialistMapper.specialistDtoToSpecialist(specialistDto))) {
+                        specialistMapper.specialistDtoToSpecialist(specialistDto).setStatus(SpecialistRegisterStatus.CONFIRM);
+                        specialistRepository.save(specialistMapper.specialistDtoToSpecialist(specialistDto));
                     }
                 }
             }
@@ -255,7 +256,7 @@ public class SpecialistServiceImpl implements SpecialistService {
 
     @Override
     public List<Specialist> searchSpecialist(SpecialistDto specialistDto) {
-        Specialist searchSpecialist = SecondSpecialistMapper.specialistDtoToSpecialist(specialistDto);
+        Specialist searchSpecialist = specialistMapper.specialistDtoToSpecialist(specialistDto);
         return specialistRepository.findAll(where(hasCustomerWithThisEmail(searchSpecialist.getEmail())).
                 and(hasCustomerWithThisFirstName(searchSpecialist.getFirstName())).
                 and(hasCustomerWithThisLastName(searchSpecialist.getLastName()))

@@ -3,7 +3,7 @@ package com.example.finalproject_phase2.controller;
 import com.example.finalproject_phase2.dto.customerCommentsDto.CustomerCommentsDto;
 import com.example.finalproject_phase2.dto.specialistDto.SpecialistDto;
 import com.example.finalproject_phase2.service.CustomerCommentsService;
-import com.example.finalproject_phase2.service.impl.mapper.SecondSpecialistMapper;
+import com.example.finalproject_phase2.service.impl.mapper.SpecialistMapper;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,10 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("CustomerComments")
 public class CustomerCommentsController {
     private final CustomerCommentsService customerCommentsService;
-
+private final SpecialistMapper specialistMapper;
     @Autowired
-    public CustomerCommentsController(CustomerCommentsService customerCommentsService) {
+    public CustomerCommentsController(CustomerCommentsService customerCommentsService, SpecialistMapper specialistMapper) {
         this.customerCommentsService = customerCommentsService;
+        this.specialistMapper = specialistMapper;
     }
 
     @PostMapping("/submit")
@@ -32,7 +33,7 @@ public class CustomerCommentsController {
     @PostMapping("/showScore")
     public ResponseEntity<Integer> showScore(@RequestBody @Valid SpecialistDto specialistDto ) {
         Integer score = customerCommentsService.showScoreOfLastCustomerCommentsThatThisSpecialistIsExist(
-                SecondSpecialistMapper.specialistDtoToSpecialist(specialistDto));
+                specialistMapper.specialistDtoToSpecialist(specialistDto));
         return new ResponseEntity<>(score, HttpStatus.ACCEPTED);
     }
 }

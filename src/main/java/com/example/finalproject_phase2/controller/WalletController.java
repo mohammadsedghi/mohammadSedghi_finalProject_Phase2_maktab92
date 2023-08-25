@@ -1,11 +1,7 @@
 package com.example.finalproject_phase2.controller;
 
-import com.example.finalproject_phase2.custom_exception.CustomException;
 import com.example.finalproject_phase2.dto.specialistSuggestionDto.SpecialistSuggestionDto;
-import com.example.finalproject_phase2.dto.subDutyDto.SubDutyDto;
-import com.example.finalproject_phase2.service.CustomerService;
 import com.example.finalproject_phase2.service.WalletService;
-import com.example.finalproject_phase2.service.impl.mapper.SecondSpecialistMapper;
 import com.example.finalproject_phase2.util.CheckValidation;
 import com.example.finalproject_phase2.util.CustomRegex;
 import jakarta.servlet.http.HttpServletRequest;

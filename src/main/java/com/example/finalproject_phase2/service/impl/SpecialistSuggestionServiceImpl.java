@@ -36,15 +36,19 @@ public class SpecialistSuggestionServiceImpl implements SpecialistSuggestionServ
     private final OrdersService ordersService;
     private final CustomerMapper customerMapper;
     private final SpecialistService specialistService;
+    private final OrdersMapper ordersMapper;
+    private final SpecialistSuggestionMapper specialistSuggestionMapper;
     CalenderAndValidation calenderAndValidation = new CalenderAndValidation();
     CheckValidation checkValidation = new CheckValidation();
 
     @Autowired
-    public SpecialistSuggestionServiceImpl(SpecialistSuggestionRepository specialistSuggestionRepository, OrdersService ordersService, CustomerMapper customerMapper, SpecialistService specialistService) {
+    public SpecialistSuggestionServiceImpl(SpecialistSuggestionRepository specialistSuggestionRepository, OrdersService ordersService, CustomerMapper customerMapper, SpecialistService specialistService, OrdersMapper ordersMapper, SpecialistSuggestionMapper specialistSuggestionMapper) {
         this.specialistSuggestionRepository = specialistSuggestionRepository;
         this.ordersService = ordersService;
         this.customerMapper = customerMapper;
         this.specialistService = specialistService;
+        this.ordersMapper = ordersMapper;
+        this.specialistSuggestionMapper = specialistSuggestionMapper;
     }
 
     @Override
@@ -87,13 +91,13 @@ public class SpecialistSuggestionServiceImpl implements SpecialistSuggestionServ
 
     @Override
     public List<SpecialistSuggestionDto> findCustomerOrderSuggestionOnPrice(CustomerDto customerDto) {
-        Collection<SpecialistSuggestionDto> specialistSuggestionDtoCollection = SpecialistSuggestionMapper.
+        Collection<SpecialistSuggestionDto> specialistSuggestionDtoCollection = specialistSuggestionMapper.
                 specialistSuggestionCollectionToSpecialistSuggestionCollectionDto(specialistSuggestionRepository.findCustomerOrderSuggestionOnPrice(customerMapper.customerDtoToCustomer(customerDto)));
     return new ArrayList<>(specialistSuggestionDtoCollection);
     }
     @Override
     public List<SpecialistSuggestionDto> findCustomerOrderSuggestionOnScoreOfSpecialist(CustomerDto customerDto) {
-        Collection<SpecialistSuggestionDto> specialistSuggestionDtoCollection = SpecialistSuggestionMapper.
+        Collection<SpecialistSuggestionDto> specialistSuggestionDtoCollection = specialistSuggestionMapper.
                 specialistSuggestionCollectionToSpecialistSuggestionCollectionDto( specialistSuggestionRepository.findCustomerOrderSuggestionOnScoreOfSpecialist(customerMapper.customerDtoToCustomer(customerDto)));
         return new ArrayList<>(specialistSuggestionDtoCollection);
     }
@@ -139,9 +143,9 @@ public class SpecialistSuggestionServiceImpl implements SpecialistSuggestionServ
     @Override
     public Boolean changeStatusOrderToDone(OrdersDto ordersDto) {
         try {
-            if (OrdersMapper.ordersDtoToOrders(ordersDto).getOrderStatus() == OrderStatus.ORDER_STARTED) {
+            if (ordersMapper.ordersDtoToOrders(ordersDto).getOrderStatus() == OrderStatus.ORDER_STARTED) {
                 OrdersDtoWithOrdersStatus ordersDtoWithOrdersStatus = new OrdersDtoWithOrdersStatus();
-                ordersDtoWithOrdersStatus.setOrders(OrdersMapper.ordersDtoToOrders(ordersDto));
+                ordersDtoWithOrdersStatus.setOrders(ordersMapper.ordersDtoToOrders(ordersDto));
                 ordersDtoWithOrdersStatus.setOrderStatus(OrderStatus.ORDER_DONE);
                 ordersService.updateOrderToNextLevel(ordersDtoWithOrdersStatus);
             } else {

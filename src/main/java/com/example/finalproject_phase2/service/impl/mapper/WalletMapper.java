@@ -4,7 +4,7 @@ import com.example.finalproject_phase2.dto.WalletDto;
 import com.example.finalproject_phase2.entity.Wallet;
 import org.mapstruct.Mapper;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface WalletMapper {
     Wallet walletDtoToWallet(WalletDto walletDto);
     Wallet walletToWalletDto(Wallet wallet);

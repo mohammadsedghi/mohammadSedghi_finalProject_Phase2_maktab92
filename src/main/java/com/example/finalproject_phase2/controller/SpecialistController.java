@@ -1,14 +1,12 @@
 package com.example.finalproject_phase2.controller;
 
 import com.example.finalproject_phase2.custom_exception.CustomException;
-import com.example.finalproject_phase2.dto.dutyDto.DutyDto;
 import com.example.finalproject_phase2.dto.specialistDto.ConvertImageDto;
 import com.example.finalproject_phase2.dto.specialistDto.SpecialistDto;
 import com.example.finalproject_phase2.dto.specialistDto.SpecialistLoginDto;
 import com.example.finalproject_phase2.dto.specialistDto.SpecialistScoreDto;
 import com.example.finalproject_phase2.entity.Specialist;
 import com.example.finalproject_phase2.service.SpecialistService;
-import com.example.finalproject_phase2.service.impl.mapper.SecondSpecialistMapper;
 import com.example.finalproject_phase2.util.CheckValidation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
