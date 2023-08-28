@@ -1,11 +1,9 @@
 package com.example.finalproject_phase2.service.impl;
 
 import com.example.finalproject_phase2.custom_exception.CustomException;
-import com.example.finalproject_phase2.dto.ProjectResponse;
 import com.example.finalproject_phase2.dto.customerCommentsDto.CustomerCommentsDto;
 import com.example.finalproject_phase2.dto.specialistDto.SpecialistScoreDto;
 import com.example.finalproject_phase2.entity.CustomerComments;
-import com.example.finalproject_phase2.entity.Orders;
 import com.example.finalproject_phase2.entity.Specialist;
 import com.example.finalproject_phase2.repository.CustomerCommentsRepository;
 import com.example.finalproject_phase2.service.CustomerCommentsService;
@@ -25,10 +23,12 @@ import java.util.Optional;
 public class CustomerCommentsServiceImpl implements CustomerCommentsService {
     private final CustomerCommentsRepository customerCommentsRepository;
     private final SpecialistService specialistService;
+    private final CustomerCommentsMapper customerCommentsMapper;
     @Autowired
-    public CustomerCommentsServiceImpl(CustomerCommentsRepository customerCommentsRepository, SpecialistService specialistService) {
+    public CustomerCommentsServiceImpl(CustomerCommentsRepository customerCommentsRepository, SpecialistService specialistService, CustomerCommentsMapper customerCommentsMapper) {
         this.customerCommentsRepository = customerCommentsRepository;
         this.specialistService = specialistService;
+        this.customerCommentsMapper = customerCommentsMapper;
     }
 CheckValidation checkValidation=new CheckValidation();
     @Override
@@ -38,9 +38,9 @@ CheckValidation checkValidation=new CheckValidation();
         }catch (CustomException ce){
             throw new CustomException("invalid customerComments");
         }
-        customerCommentsRepository.save(CustomerCommentsMapper.customerCommentsDtoToCustomerComments(customerCommentsDto));
+        customerCommentsRepository.save(customerCommentsMapper.customerCommentsDtoToCustomerComments(customerCommentsDto));
         SpecialistScoreDto specialistScoreDto=new SpecialistScoreDto();
-        Specialist specialist=CustomerCommentsMapper.customerCommentsDtoToCustomerComments(customerCommentsDto).getOrders().getSpecialist();
+        Specialist specialist=customerCommentsMapper.customerCommentsDtoToCustomerComments(customerCommentsDto).getOrders().getSpecialist();
         specialistScoreDto.setSpecialist(specialist);
         Integer number = findNumberOFCustomerCommentsThatSpecialistIsExist(specialist);
         Integer finalScore=(((number*specialist.getScore())+customerCommentsDto.getScore())/number+1);

@@ -4,9 +4,8 @@ import com.example.finalproject_phase2.dto.specialistSuggestionDto.SpecialistSug
 import com.example.finalproject_phase2.entity.SpecialistSuggestion;
 import org.mapstruct.Mapper;
 
-import java.util.ArrayList;
 import java.util.Collection;
-@Mapper(componentModel = "spring")
+@Mapper
 public interface SpecialistSuggestionMapper {
       SpecialistSuggestionDto specialistSuggestionToSpecialistsuggestionDto(SpecialistSuggestion specialistSuggestion);
     Collection<SpecialistSuggestionDto>

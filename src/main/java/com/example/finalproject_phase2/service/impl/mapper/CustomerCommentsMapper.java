@@ -2,23 +2,13 @@ package com.example.finalproject_phase2.service.impl.mapper;
 
 import com.example.finalproject_phase2.dto.customerCommentsDto.CustomerCommentsDto;
 import com.example.finalproject_phase2.entity.CustomerComments;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
 
-@Component
-public class CustomerCommentsMapper {
-    public static CustomerCommentsDto customerCommentsToCustomerCommentsDto(CustomerComments customerComments) {
-        return CustomerCommentsDto.builder()
-                .description(customerComments.getDescription())
-                .orders(customerComments.getOrders())
-                .score(customerComments.getScore())
-                .build();
-    }
+@Mapper
+public interface CustomerCommentsMapper {
+      CustomerCommentsDto customerCommentsToCustomerCommentsDto(CustomerComments customerComments);
 
-    public static CustomerComments customerCommentsDtoToCustomerComments(CustomerCommentsDto customerCommentsDto) {
-        return CustomerComments.builder()
-                .description(customerCommentsDto.getDescription())
-                .orders(customerCommentsDto.getOrders())
-                .score(customerCommentsDto.getScore())
-                .build();
-    }
+
+      CustomerComments customerCommentsDtoToCustomerComments(CustomerCommentsDto customerCommentsDto) ;
+
 }

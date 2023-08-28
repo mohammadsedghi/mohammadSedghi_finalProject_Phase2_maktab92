@@ -6,7 +6,7 @@ import com.example.finalproject_phase2.dto.customerDto.CustomerEmailDto;
 import com.example.finalproject_phase2.entity.Customer;
 import org.mapstruct.Mapper;
 
-@Mapper()
+@Mapper
 public interface CustomerMapper {
       Customer customerDtoToCustomer(CustomerDto customerDto);
       CustomerDto customerToCustomerDto(Customer customer);

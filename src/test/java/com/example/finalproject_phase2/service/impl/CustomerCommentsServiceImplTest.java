@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.SpringVersion;
 
 import java.util.Optional;
 
@@ -27,6 +28,8 @@ class CustomerCommentsServiceImplTest {
     OrdersService ordersService;
     @Autowired
     SpecialistService specialistService;
+    @Autowired
+    CustomerCommentsMapper customerCommentsMapper;
     @BeforeEach
     void setUp() {
     }
@@ -42,7 +45,7 @@ class CustomerCommentsServiceImplTest {
                 .build();
 
  assertEquals(true,customerCommentsService.submitCustomerCommentsService(
-         CustomerCommentsMapper.customerCommentsToCustomerCommentsDto(customerComments)));
+         customerCommentsMapper.customerCommentsToCustomerCommentsDto(customerComments)));
 
     }
     @Test
@@ -51,7 +54,9 @@ class CustomerCommentsServiceImplTest {
         Specialist specialist = specialistService.findByEmail("ali@gmail.com");
         Integer number = customerCommentsService.findNumberOFCustomerCommentsThatSpecialistIsExist(specialist);
         System.out.println(number);
-
-
     }
+//    @Test
+//    void springVersion(){
+//        assertEquals("5.1.10.RELEASE", SpringVersion.getVersion());
+//    }
 }

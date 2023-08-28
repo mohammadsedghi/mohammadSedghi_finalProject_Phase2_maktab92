@@ -1,6 +1,5 @@
 package com.example.finalproject_phase2.service.impl.mapper;
 
-import com.example.finalproject_phase2.dto.subDutyDto.EditSubDutyDto;
 import com.example.finalproject_phase2.dto.subDutyDto.SubDutyDto;
 import com.example.finalproject_phase2.entity.SubDuty;
 import org.mapstruct.Mapper;
