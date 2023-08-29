@@ -34,6 +34,15 @@ public class SecurityConfiguration {
                            .requestMatchers("api/customer/changePassword").hasAuthority("CUSTOMER")
                            .requestMatchers("api/customer/deleteAddress").hasAuthority("CUSTOMER")
                            .requestMatchers("api/customer/submitAddress").hasAuthority("CUSTOMER")
+                           .requestMatchers("api/customer/submitOrders").hasAuthority("CUSTOMER")
+                           .requestMatchers("api/customer/findOrdersWithThisCustomerAndSubDuty").hasAuthority("CUSTOMER")
+                           .requestMatchers("api/customer/updateOrderToNextLevelStatus").hasAuthority("CUSTOMER")
+                           .requestMatchers("api/customer/findOrdersInStatusWaitingForSpecialistSuggestion").hasAuthority("CUSTOMER")
+                           .requestMatchers("api/customer/findOrdersInStatusWaitingForSpecialistSelection").hasAuthority("CUSTOMER")
+                           .requestMatchers("api/customer/findOrdersInStatusWaitingForSpecialistToWorkplace").hasAuthority("CUSTOMER")
+                           .requestMatchers("api/customer/findOrdersInStatusStarted").hasAuthority("CUSTOMER")
+                           .requestMatchers("api/customer/findOrdersInStatusDone").hasAuthority("CUSTOMER")
+                           .requestMatchers("api/customer/findOrdersInStatusPaid").hasAuthority("CUSTOMER")
                            .requestMatchers("/api/v1/demo-controller/say")
                            .hasAuthority("ADMIN").anyRequest().authenticated();
 
