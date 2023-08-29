@@ -1,9 +1,17 @@
 package com.example.finalproject_phase2.controller.security_config;
 
 import com.example.finalproject_phase2.dto.adminDto.AdminLoginDto;
+import com.example.finalproject_phase2.dto.customerDto.CustomerDto;
+import com.example.finalproject_phase2.dto.customerDto.CustomerLoginDto;
 import com.example.finalproject_phase2.entity.Admin;
+import com.example.finalproject_phase2.entity.Customer;
 import com.example.finalproject_phase2.service.AdminService;
+import com.example.finalproject_phase2.service.CustomerService;
+import com.example.finalproject_phase2.service.impl.mapper.CustomerMapper;
+import com.example.finalproject_phase2.util.CheckValidation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,15 +20,9 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
     private final AdminService adminService;
-    @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody Admin admin){
-        System.out.println(admin.getEmail());
-      return  ResponseEntity.ok(adminService.register(admin));
-    }
-    @PostMapping("/authentication")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody AdminLoginDto adminLoginDto){
-        return  ResponseEntity.ok(adminService.authenticate(adminLoginDto));
-    }
+    private final CustomerService customerService;
+    private final CustomerMapper customerMapper;
+
     @GetMapping("/say")
     public ResponseEntity<String> sayHello(){
         return  ResponseEntity.ok("hello");
@@ -29,5 +31,6 @@ public class AuthController {
     public ResponseEntity<String> sayBy(){
         return  ResponseEntity.ok("by");
     }
+
 
 }

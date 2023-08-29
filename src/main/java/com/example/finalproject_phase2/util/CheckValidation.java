@@ -20,7 +20,7 @@ public class CheckValidation {
     public static Customer memberTypeCustomer;
     public static Specialist memberTypespecialist;
     public static Admin memberTypeAdmin;
-    public static String userType;
+    public static String userType="";
     CustomRegex customRegex = new CustomRegex();
 
     public <T> boolean isValid(T object) {

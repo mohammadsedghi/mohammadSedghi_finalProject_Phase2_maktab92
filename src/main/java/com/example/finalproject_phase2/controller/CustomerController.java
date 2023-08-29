@@ -1,5 +1,6 @@
 package com.example.finalproject_phase2.controller;
 
+import com.example.finalproject_phase2.controller.security_config.AuthenticationResponse;
 import com.example.finalproject_phase2.custom_exception.CustomException;
 import com.example.finalproject_phase2.custom_exception.CustomNoResultException;
 import com.example.finalproject_phase2.dto.customerDto.CustomerChangePasswordDto;
@@ -16,16 +17,12 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/customer")
+@RequestMapping("/api/customer")
 public class CustomerController {
     private final CustomerService customerService;
     private final CustomerMapper customerMapper;
@@ -50,16 +47,42 @@ public class CustomerController {
         }else  throw new CustomException("customer not saved");
     }
 
-    @PostMapping("/changePassword")
-    public ResponseEntity<Boolean> changePassword(@RequestBody @Valid  CustomerChangePasswordDto customerChangePasswordDto) {
-       if(customerService.changePassword(customerChangePasswordDto)) {
-           return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
-       }else throw new CustomNoResultException("password not changed");
-    }
+//    @PostMapping("/changePassword")
+//    public ResponseEntity<Boolean> changePassword(@RequestBody @Valid  CustomerChangePasswordDto customerChangePasswordDto) {
+//       if(customerService.changePassword(customerChangePasswordDto)) {
+//           return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
+//       }else throw new CustomNoResultException("password not changed");
+//    }
     @PostMapping("/search")
     public ResponseEntity<List<Customer>> searchSpecialist(@RequestBody CustomerDto customerDto) {
         List<Customer> customers = customerService.searchCustomer(customerDto);
         return new ResponseEntity<>(customers, HttpStatus.ACCEPTED);
     }
+    @PostMapping("/registerCustomer")
+    public ResponseEntity<AuthenticationResponse> registerCustomer(@RequestBody CustomerDto customerDto
+            , @RequestParam String userType){
+        System.out.println(customerMapper.customerDtoToCustomer(customerDto).getEmail());
+        CheckValidation.userType=userType;
+        System.out.println(userType);
+        if (userType.equals("customer")) {
+            return ResponseEntity.ok(customerService.register(customerMapper.customerDtoToCustomer(customerDto)));
+        }else  return new ResponseEntity<>(new AuthenticationResponse(), HttpStatus.BAD_REQUEST);
+    }
+    @PostMapping("/authenticationCustomer")
+    public ResponseEntity<AuthenticationResponse> loginCustomer(@RequestBody CustomerLoginDto customerLoginDto
+            , @RequestParam String userType){
+        CheckValidation.userType=userType;
+        System.out.println(customerLoginDto.getEmail());
+        System.out.println(userType);
+        if (userType.equals("customer")){
+            return  ResponseEntity.ok(customerService.authenticate(customerLoginDto));
+        }else  return new ResponseEntity<>(new AuthenticationResponse(), HttpStatus.BAD_REQUEST);
+    }
+    @PostMapping("/changePassword")
+    public ResponseEntity<Boolean> changePassword(@RequestBody @Valid  CustomerChangePasswordDto customerChangePasswordDto) {
 
+        if(customerService.changePassword(customerChangePasswordDto.getEmail(),customerChangePasswordDto.getNewPassword())) {
+            return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
+        }else throw new CustomNoResultException("password not changed");
+    }
 }

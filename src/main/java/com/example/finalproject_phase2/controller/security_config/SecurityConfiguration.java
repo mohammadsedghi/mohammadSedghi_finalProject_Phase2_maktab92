@@ -1,5 +1,6 @@
 package com.example.finalproject_phase2.controller.security_config;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +10,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
+
+import static org.springframework.security.authorization.AuthorityAuthorizationManager.hasRole;
 
 @Configuration
 @EnableWebSecurity
@@ -22,7 +27,11 @@ public class SecurityConfiguration {
 //        http.cors(AbstractHttpConfigurer::disable);
          http.authorizeHttpRequests(
                authorizeRequests -> {
-                   authorizeRequests.requestMatchers("/api/v1/auth/authentication").permitAll()
+                   authorizeRequests.requestMatchers("api/v1/auth/authentication").permitAll()
+                           .requestMatchers("api/customer/authenticationCustomer").permitAll()
+                           .requestMatchers("api/customer/registerCustomer").permitAll()
+                           .requestMatchers("api/v1/auth/way").hasAuthority("CUSTOMER")
+                           .requestMatchers("api/customer/changePassword").hasAuthority("CUSTOMER")
                            .requestMatchers("/api/v1/demo-controller/say")
                            .hasAuthority("ADMIN").anyRequest().authenticated();
 
@@ -34,4 +43,5 @@ public class SecurityConfiguration {
 //       });
         return http.build();
     }
+
 }

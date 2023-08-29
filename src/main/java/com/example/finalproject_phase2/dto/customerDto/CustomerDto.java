@@ -23,7 +23,7 @@ public class CustomerDto extends PersonDto {
     public String toString() {
         return "CustomerSignUpDto{" +
                 ", firstName='" + firstName + '\'' +
-                ", lastname='" + lastName + '\'' +
+                ", lastName='" + lastName + '\'' +
                 ", nationalId='" + nationalId + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +

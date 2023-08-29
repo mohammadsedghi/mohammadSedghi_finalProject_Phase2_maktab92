@@ -1,5 +1,6 @@
 package com.example.finalproject_phase2.service;
 
+import com.example.finalproject_phase2.controller.security_config.AuthenticationResponse;
 import com.example.finalproject_phase2.dto.*;
 import com.example.finalproject_phase2.dto.customerDto.CustomerChangePasswordDto;
 import com.example.finalproject_phase2.dto.customerDto.CustomerLoginDto;
@@ -14,6 +15,9 @@ public interface CustomerService {
     CustomerDto addCustomer(CustomerDto customerSignUpDto);
     String encryptCustomerPassword(String password);
     CustomerDto loginByEmailAndPassword(CustomerLoginDto customerLoginDto);
-    boolean changePassword(CustomerChangePasswordDto customerChangePasswordDto);
+//    boolean changePassword(CustomerChangePasswordDto customerChangePasswordDto);
+    boolean changePassword(String email,String password );
     List<Customer> searchCustomer(CustomerDto customerDto);
+    AuthenticationResponse register(Customer customer);
+    AuthenticationResponse authenticate(CustomerLoginDto customerLoginDto);
 }

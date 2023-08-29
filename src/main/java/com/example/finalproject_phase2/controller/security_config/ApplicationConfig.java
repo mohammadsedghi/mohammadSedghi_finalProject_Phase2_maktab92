@@ -1,6 +1,11 @@
 package com.example.finalproject_phase2.controller.security_config;
 
+import com.example.finalproject_phase2.entity.Customer;
+import com.example.finalproject_phase2.entity.Specialist;
 import com.example.finalproject_phase2.repository.AdminRepository;
+import com.example.finalproject_phase2.repository.CustomerRepository;
+import com.example.finalproject_phase2.repository.SpecialistRepository;
+import com.example.finalproject_phase2.util.CheckValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,11 +23,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class ApplicationConfig{
    private final AdminRepository adminRepository;
+   private final SpecialistRepository specialistRepository;
+   private final CustomerRepository customerRepository;
 private final CustomUserDetailsService customUserDetailsService;
     @Bean
     public UserDetailsService userDetailsService(){
-        return username -> (UserDetails) adminRepository.findByEmail(username)
-                .orElseThrow(()-> new UsernameNotFoundException("user not found"));
+        if (CheckValidation.userType.equals("admin")) {
+            return username -> (UserDetails) adminRepository.findByEmail(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("user not found"));
+        } else if (CheckValidation.userType.equals("customer")) {
+            return username -> (UserDetails) customerRepository.findByEmail(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("user not found"));
+        }else  return username -> (UserDetails) specialistRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("user not found"));
     }
     @Bean
     public AuthenticationProvider authenticationProvider(){
@@ -39,6 +52,4 @@ private final CustomUserDetailsService customUserDetailsService;
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-
 }

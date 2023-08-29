@@ -24,10 +24,10 @@ public class AddressController {
     @PostMapping("/deleteAddress")
     public ResponseEntity<AddressDto> deleteAddress(@RequestBody  AddressDto addressDto) {
 
-            AddressDto address = addressService.removeAddress(addressDto);
+        AddressDto address = addressService.removeAddress(addressDto);
 
-      if (address!=null) return new ResponseEntity<>(address, HttpStatus.ACCEPTED);
-      else
+        if (address!=null) return new ResponseEntity<>(address, HttpStatus.ACCEPTED);
+        else
             throw new CustomException("address not found");
     }
     @PostMapping("/submitAddress")
@@ -39,7 +39,3 @@ public class AddressController {
     }
 
 }
-
-
-//       return ProjectResponse.getResponseEntity(addressService.removeAddress(addressDto));
-//        return null;

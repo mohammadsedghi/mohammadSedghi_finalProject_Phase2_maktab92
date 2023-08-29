@@ -1,10 +1,15 @@
 package com.example.finalproject_phase2.service.impl;
 
+import com.example.finalproject_phase2.controller.security_config.AuthenticationResponse;
+import com.example.finalproject_phase2.controller.security_config.CustomUserDetailsService;
+import com.example.finalproject_phase2.controller.security_config.JwtService;
 import com.example.finalproject_phase2.custom_exception.CustomException;
 import com.example.finalproject_phase2.custom_exception.CustomNoResultException;
+import com.example.finalproject_phase2.dto.adminDto.AdminLoginDto;
 import com.example.finalproject_phase2.dto.customerDto.CustomerChangePasswordDto;
 import com.example.finalproject_phase2.dto.customerDto.CustomerLoginDto;
 import com.example.finalproject_phase2.dto.customerDto.CustomerDto;
+import com.example.finalproject_phase2.entity.Admin;
 import com.example.finalproject_phase2.entity.Customer;
 import com.example.finalproject_phase2.repository.CustomerRepository;
 import com.example.finalproject_phase2.service.CustomerService;
@@ -13,13 +18,14 @@ import com.example.finalproject_phase2.service.impl.mapper.CustomerMapper;
 import com.example.finalproject_phase2.util.CheckValidation;
 import com.example.finalproject_phase2.util.hash_password.EncryptPassword;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -34,16 +40,24 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
     private final WalletService walletService;
     private final CustomerMapper customerMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
+    private final CustomUserDetailsService customUserDetailsService;
 
     EntityManager entityManager;
     CheckValidation checkValidation = new CheckValidation();
 
     @Autowired
-    public CustomerServiceImpl(CustomerRepository customerRepository, WalletService walletService, CustomerMapper customerMapper) {
+    public CustomerServiceImpl(CustomerRepository customerRepository, WalletService walletService, CustomerMapper customerMapper, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtService jwtService, CustomUserDetailsService customUserDetailsService) {
         this.customerRepository = customerRepository;
         this.walletService = walletService;
         this.customerMapper = customerMapper;
 
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     @Override
@@ -106,7 +120,7 @@ public class CustomerServiceImpl implements CustomerService {
         return customerMapper.customerToCustomerDto(CheckValidation.memberTypeCustomer);
     }
 
-    @Override
+//    @Override
     public boolean changePassword(CustomerChangePasswordDto customerChangePasswordDto) {
         try {
             if (checkValidation.isValidEmail(customerChangePasswordDto.getEmail()) && checkValidation.isValidPassword(customerChangePasswordDto.getOldPassword())) {
@@ -163,5 +177,39 @@ public class CustomerServiceImpl implements CustomerService {
 //        searchPredicate[2] = cb.equal(customer.get("email"), searchCustomer.getEmail());
 //        query.select(customer).where(searchPredicate);
 //        return entityManager.createQuery(query).getResultList();
+    }
+
+    public AuthenticationResponse register(Customer customer){
+        customer.setPassword(passwordEncoder.encode(customer.getPassword()));
+        customer.setRegisterDate(LocalDate.now());
+        customer.setRegisterTime(LocalTime.now());
+        customer.setWallet(walletService.createWallet());
+        customerRepository.save(customer);
+        String jwtToken=jwtService.generateToken(customUserDetailsService.loadUserByUsername(customer.getEmail()));
+        return  AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
+    }
+    public AuthenticationResponse authenticate(CustomerLoginDto customerLoginDto){
+
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        customerLoginDto.getEmail(),customerLoginDto.getPassword()
+                )
+        );
+        Customer customer=customerRepository.findByEmail(customerLoginDto.getEmail()).orElseThrow();
+        String jwtToken=jwtService.generateToken(customUserDetailsService.loadUserByUsername(customer.getEmail()));
+        return  AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
+    }
+    @Override
+    public boolean changePassword(String email, String newPassword){
+        Customer user = customerRepository.findByEmail(email).
+                orElseThrow(() -> new UsernameNotFoundException("user not found"));
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(encodedPassword);
+        customerRepository.save(user);
+        return true;
     }
 }
