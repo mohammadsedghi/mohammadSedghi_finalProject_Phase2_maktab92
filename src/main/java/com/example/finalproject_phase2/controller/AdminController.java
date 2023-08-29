@@ -2,29 +2,23 @@ package com.example.finalproject_phase2.controller;
 
 import com.example.finalproject_phase2.controller.security_config.AuthenticationResponse;
 import com.example.finalproject_phase2.custom_exception.CustomException;
-import com.example.finalproject_phase2.dto.ProjectResponse;
 import com.example.finalproject_phase2.dto.adminDto.AdminDto;
 import com.example.finalproject_phase2.dto.adminDto.AdminLoginDto;
+import com.example.finalproject_phase2.dto.dutyDto.DutyDto;
 import com.example.finalproject_phase2.entity.Admin;
 import com.example.finalproject_phase2.service.AdminService;
+import com.example.finalproject_phase2.service.DutyService;
 import com.example.finalproject_phase2.service.impl.mapper.AdminMapper;
+import com.example.finalproject_phase2.service.impl.mapper.DutyMapper;
 import com.example.finalproject_phase2.util.CheckValidation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Base64;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -32,13 +26,17 @@ public class AdminController {
     private  final AdminService adminService;
     private final AdminMapper adminMapper;
     private final AuthenticationProvider authenticationProvider;
+    private final DutyService dutyService;
+    private final DutyMapper dutyMapper;
 
 @Autowired
-    public AdminController(AdminService adminService, AdminMapper adminMapper, AuthenticationProvider authenticationProvider) {
+    public AdminController(AdminService adminService, AdminMapper adminMapper, AuthenticationProvider authenticationProvider, DutyService dutyService, DutyMapper dutyMapper) {
         this.adminService = adminService;
         this.adminMapper = adminMapper;
     this.authenticationProvider = authenticationProvider;
 
+    this.dutyService = dutyService;
+    this.dutyMapper = dutyMapper;
 }
 
     @PostMapping("/login2")
@@ -61,5 +59,15 @@ public class AdminController {
         if (userType.equals("admin")){
             return  ResponseEntity.ok(adminService.authenticate(adminLoginDto));
         }else  return new ResponseEntity<>(new AuthenticationResponse(), HttpStatus.BAD_REQUEST);
+    }
+    @PostMapping("/submit")
+    public ResponseEntity<DutyDto> addDuty(@RequestBody DutyDto dutyDto) {
+        DutyDto dutyDtoGenerated = dutyService.addDuty(dutyDto);
+        if (dutyDtoGenerated!=null)return new ResponseEntity<>(dutyDtoGenerated, HttpStatus.ACCEPTED);
+        else throw new CustomException("duty not saved");
+    }
+    @GetMapping("/findAll")
+    public Set<DutyDto> getAllDuty() {
+        return dutyService.findAllByDuties();
     }
 }
