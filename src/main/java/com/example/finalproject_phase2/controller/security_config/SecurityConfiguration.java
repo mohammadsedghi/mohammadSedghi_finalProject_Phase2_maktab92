@@ -32,6 +32,8 @@ public class SecurityConfiguration {
                            .requestMatchers("api/customer/registerCustomer").permitAll()
                            .requestMatchers("api/v1/auth/way").hasAuthority("CUSTOMER")
                            .requestMatchers("api/customer/changePassword").hasAuthority("CUSTOMER")
+                           .requestMatchers("api/customer/deleteAddress").hasAuthority("CUSTOMER")
+                           .requestMatchers("api/customer/submitAddress").hasAuthority("CUSTOMER")
                            .requestMatchers("/api/v1/demo-controller/say")
                            .hasAuthority("ADMIN").anyRequest().authenticated();
 
