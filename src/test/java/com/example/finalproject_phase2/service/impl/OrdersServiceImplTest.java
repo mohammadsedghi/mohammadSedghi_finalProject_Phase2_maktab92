@@ -7,8 +7,8 @@ import com.example.finalproject_phase2.dto.ordersDto.OrdersWithPriceAndBasePrice
 import com.example.finalproject_phase2.entity.*;
 import com.example.finalproject_phase2.entity.enumeration.OrderStatus;
 import com.example.finalproject_phase2.service.*;
-import com.example.finalproject_phase2.service.impl.mapper.CustomerMapper;
-import com.example.finalproject_phase2.service.impl.mapper.SubDutyMapper;
+import com.example.finalproject_phase2.mapper.CustomerMapper;
+import com.example.finalproject_phase2.mapper.SubDutyMapper;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

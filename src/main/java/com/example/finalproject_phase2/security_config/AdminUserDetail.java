@@ -1,33 +1,34 @@
-package com.example.finalproject_phase2.controller.security_config;
+package com.example.finalproject_phase2.security_config;
 
-import com.example.finalproject_phase2.entity.Customer;
+import com.example.finalproject_phase2.entity.Admin;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+@Getter
+public class AdminUserDetail implements UserDetails {
+    private final Admin admin;
 
-public class CustomerUserDetail implements UserDetails {
-    private final Customer customer;
-
-    public CustomerUserDetail(Customer customer) {
-        this.customer = customer;
+    public AdminUserDetail(Admin admin) {
+        this.admin = admin;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("CUSTOMER"));
+        return List.of(new SimpleGrantedAuthority("ADMIN"));
     }
 
     @Override
     public String getPassword() {
-        return customer.getPassword();
+        return admin.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return customer.getEmail();
+        return admin.getEmail();
     }
 
     @Override
@@ -49,4 +50,5 @@ public class CustomerUserDetail implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }

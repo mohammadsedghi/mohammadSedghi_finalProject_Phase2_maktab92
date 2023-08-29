@@ -1,6 +1,7 @@
 package com.example.finalproject_phase2.controller;
 
-import com.example.finalproject_phase2.controller.security_config.AuthenticationResponse;
+import com.example.finalproject_phase2.dto.specialistSuggestionDto.SpecialistSuggestionDto;
+import com.example.finalproject_phase2.security_config.AuthenticationResponse;
 import com.example.finalproject_phase2.custom_exception.CustomException;
 import com.example.finalproject_phase2.custom_exception.CustomNoResultException;
 import com.example.finalproject_phase2.dto.addressDto.AddressDto;
@@ -15,13 +16,10 @@ import com.example.finalproject_phase2.dto.ordersDto.OrdersWithPriceAndBasePrice
 import com.example.finalproject_phase2.entity.Address;
 import com.example.finalproject_phase2.entity.Customer;
 import com.example.finalproject_phase2.entity.Orders;
-import com.example.finalproject_phase2.service.AddressService;
-import com.example.finalproject_phase2.service.CustomerCommentsService;
-import com.example.finalproject_phase2.service.CustomerService;
-import com.example.finalproject_phase2.service.OrdersService;
-import com.example.finalproject_phase2.service.impl.mapper.AddressMapper;
-import com.example.finalproject_phase2.service.impl.mapper.CustomerMapper;
-import com.example.finalproject_phase2.service.impl.mapper.OrdersMapper;
+import com.example.finalproject_phase2.service.*;
+import com.example.finalproject_phase2.mapper.AddressMapper;
+import com.example.finalproject_phase2.mapper.CustomerMapper;
+import com.example.finalproject_phase2.mapper.OrdersMapper;
 import com.example.finalproject_phase2.util.CheckValidation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,19 +37,21 @@ public class CustomerController {
     private final AddressService addressService;
     private final CustomerCommentsService customerCommentsService;
     private final OrdersService ordersService;
+    private final SpecialistSuggestionService specialistSuggestionService;
     private final AddressMapper addressMapper;
     private final CustomerMapper customerMapper;
     private final OrdersMapper ordersMapper;
 
 
     @Autowired
-    public CustomerController(CustomerService customerService, CustomerMapper customerMapper, AddressService addressService, CustomerCommentsService customerCommentsService, AddressMapper addressMapper, OrdersService ordersService, OrdersMapper ordersMapper) {
+    public CustomerController(CustomerService customerService, CustomerMapper customerMapper, AddressService addressService, CustomerCommentsService customerCommentsService, AddressMapper addressMapper, OrdersService ordersService, SpecialistSuggestionService specialistSuggestionService, OrdersMapper ordersMapper) {
         this.customerService = customerService;
         this.customerMapper = customerMapper;
         this.addressService = addressService;
         this.customerCommentsService = customerCommentsService;
         this.addressMapper = addressMapper;
         this.ordersService = ordersService;
+        this.specialistSuggestionService = specialistSuggestionService;
         this.ordersMapper = ordersMapper;
     }
 
@@ -191,5 +191,14 @@ public class CustomerController {
         customerCommentsService.submitCustomerCommentsService(customerCommentsDto);
         return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
     }
-
+    @PostMapping("/findCustomerOrderSuggestionOnScore")
+    public ResponseEntity<List<SpecialistSuggestionDto>> findCustomerOrderSuggestionOnScoreOfSpecialist(@RequestBody @Valid CustomerDto customerDto) {
+        List<SpecialistSuggestionDto> customerOrderSuggestionOnScoreOfSpecialist = specialistSuggestionService.findCustomerOrderSuggestionOnScoreOfSpecialist(customerDto);
+        return new ResponseEntity<>(customerOrderSuggestionOnScoreOfSpecialist, HttpStatus.ACCEPTED);
+    }
+    @PostMapping("/findCustomerOrderSuggestionOnPrice")
+    public ResponseEntity<List<SpecialistSuggestionDto>> findCustomerOrderSuggestionOnPrice(@RequestBody @Valid CustomerDto CustomerDto ) {
+        List<SpecialistSuggestionDto> customerOrderSuggestionOnPrice = specialistSuggestionService.findCustomerOrderSuggestionOnPrice(CustomerDto);
+        return new ResponseEntity<>(customerOrderSuggestionOnPrice, HttpStatus.ACCEPTED);
+    }
 }

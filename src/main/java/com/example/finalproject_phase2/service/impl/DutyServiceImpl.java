@@ -1,12 +1,10 @@
 package com.example.finalproject_phase2.service.impl;
 
 import com.example.finalproject_phase2.custom_exception.CustomException;
-import com.example.finalproject_phase2.dto.ProjectResponse;
 import com.example.finalproject_phase2.dto.dutyDto.DutyDto;
-import com.example.finalproject_phase2.entity.Duty;
 import com.example.finalproject_phase2.repository.DutyRepository;
 import com.example.finalproject_phase2.service.DutyService;
-import com.example.finalproject_phase2.service.impl.mapper.DutyMapper;
+import com.example.finalproject_phase2.mapper.DutyMapper;
 import com.example.finalproject_phase2.util.CheckValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

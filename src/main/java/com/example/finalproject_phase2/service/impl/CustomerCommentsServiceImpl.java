@@ -8,7 +8,7 @@ import com.example.finalproject_phase2.entity.Specialist;
 import com.example.finalproject_phase2.repository.CustomerCommentsRepository;
 import com.example.finalproject_phase2.service.CustomerCommentsService;
 import com.example.finalproject_phase2.service.SpecialistService;
-import com.example.finalproject_phase2.service.impl.mapper.CustomerCommentsMapper;
+import com.example.finalproject_phase2.mapper.CustomerCommentsMapper;
 import com.example.finalproject_phase2.util.CheckValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

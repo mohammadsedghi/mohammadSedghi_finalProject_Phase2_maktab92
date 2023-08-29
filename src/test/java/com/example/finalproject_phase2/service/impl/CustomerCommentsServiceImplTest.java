@@ -6,14 +6,13 @@ import com.example.finalproject_phase2.entity.Specialist;
 import com.example.finalproject_phase2.service.CustomerCommentsService;
 import com.example.finalproject_phase2.service.OrdersService;
 import com.example.finalproject_phase2.service.SpecialistService;
-import com.example.finalproject_phase2.service.impl.mapper.CustomerCommentsMapper;
+import com.example.finalproject_phase2.mapper.CustomerCommentsMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.SpringVersion;
 
 import java.util.Optional;
 

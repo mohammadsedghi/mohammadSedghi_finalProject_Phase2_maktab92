@@ -8,10 +8,9 @@ import com.example.finalproject_phase2.dto.specialistSuggestionDto.ValidSpeciali
 import com.example.finalproject_phase2.entity.SpecialistSuggestion;
 import com.example.finalproject_phase2.entity.enumeration.SpecialistSelectionOfOrder;
 import com.example.finalproject_phase2.service.*;
-import com.example.finalproject_phase2.service.impl.mapper.CustomerMapper;
-import com.example.finalproject_phase2.service.impl.mapper.OrdersMapper;
-import com.example.finalproject_phase2.service.impl.mapper.SpecialistMapper;
-import com.example.finalproject_phase2.service.impl.mapper.SpecialistSuggestionMapper;
+import com.example.finalproject_phase2.mapper.CustomerMapper;
+import com.example.finalproject_phase2.mapper.OrdersMapper;
+import com.example.finalproject_phase2.mapper.SpecialistSuggestionMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;

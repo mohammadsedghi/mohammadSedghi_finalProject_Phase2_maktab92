@@ -1,4 +1,4 @@
-package com.example.finalproject_phase2.controller.security_config;
+package com.example.finalproject_phase2.security_config;
 
 import com.example.finalproject_phase2.entity.Admin;
 import com.example.finalproject_phase2.entity.Customer;

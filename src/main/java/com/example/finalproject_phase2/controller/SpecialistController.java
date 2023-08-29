@@ -6,14 +6,19 @@ import com.example.finalproject_phase2.dto.specialistDto.ConvertImageDto;
 import com.example.finalproject_phase2.dto.specialistDto.SpecialistDto;
 import com.example.finalproject_phase2.dto.specialistDto.SpecialistLoginDto;
 import com.example.finalproject_phase2.dto.specialistDto.SpecialistScoreDto;
+import com.example.finalproject_phase2.dto.specialistSuggestionDto.StatusOrderSpecialistSuggestionDto;
+import com.example.finalproject_phase2.dto.specialistSuggestionDto.StatusOrderSpecialistSuggestionDtoWithOrderAndSpecialist;
+import com.example.finalproject_phase2.dto.specialistSuggestionDto.ValidSpecialistSuggestionDto;
 import com.example.finalproject_phase2.dto.subDutyDto.SubDutyDto;
 import com.example.finalproject_phase2.entity.Orders;
 import com.example.finalproject_phase2.entity.Specialist;
+import com.example.finalproject_phase2.entity.enumeration.SpecialistSelectionOfOrder;
 import com.example.finalproject_phase2.service.CustomerCommentsService;
 import com.example.finalproject_phase2.service.OrdersService;
 import com.example.finalproject_phase2.service.SpecialistService;
-import com.example.finalproject_phase2.service.impl.mapper.OrdersMapper;
-import com.example.finalproject_phase2.service.impl.mapper.SpecialistMapper;
+import com.example.finalproject_phase2.service.SpecialistSuggestionService;
+import com.example.finalproject_phase2.mapper.OrdersMapper;
+import com.example.finalproject_phase2.mapper.SpecialistMapper;
 import com.example.finalproject_phase2.util.CheckValidation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,14 +39,17 @@ public class SpecialistController {
 
     private final OrdersService ordersService;
     private final CustomerCommentsService customerCommentsService;
+    private final SpecialistSuggestionService specialistSuggestionService;
+
     private final OrdersMapper ordersMapper;
     private final SpecialistMapper specialistMapper;
 
     @Autowired
-    public SpecialistController(SpecialistService specialistService, CustomerCommentsService customerCommentsService, OrdersService ordersService, OrdersMapper ordersMapper, SpecialistMapper specialistMapper) {
+    public SpecialistController(SpecialistService specialistService, CustomerCommentsService customerCommentsService, OrdersService ordersService, SpecialistSuggestionService specialistSuggestionService, OrdersMapper ordersMapper, SpecialistMapper specialistMapper) {
         this.specialistService = specialistService;
         this.customerCommentsService = customerCommentsService;
         this.ordersService = ordersService;
+        this.specialistSuggestionService = specialistSuggestionService;
         this.ordersMapper = ordersMapper;
         this.specialistMapper = specialistMapper;
     }
@@ -98,5 +106,35 @@ public class SpecialistController {
         Integer score = customerCommentsService.showScoreOfLastCustomerCommentsThatThisSpecialistIsExist(
                 specialistMapper.specialistDtoToSpecialist(specialistDto));
         return new ResponseEntity<>(score, HttpStatus.ACCEPTED);
+    }
+    @PostMapping("/submit")
+    public ResponseEntity<Boolean> IsValidSpecialSuggestion(@RequestBody @Valid ValidSpecialistSuggestionDto validSpecialistSuggestionDto) {
+        specialistSuggestionService.IsValidSpecialSuggestion(validSpecialistSuggestionDto);
+        return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
+    }
+    @PostMapping("/findSuggestWithThisSpecialistAndOrder")
+    public ResponseEntity<Boolean> findSuggestWithThisSpecialistAndOrder(@RequestBody @Valid StatusOrderSpecialistSuggestionDtoWithOrderAndSpecialist statusOrderSpecialistSuggestionDtoWithOrderAndSpecialist ) {
+        specialistSuggestionService.findSuggestWithThisSpecialistAndOrder(statusOrderSpecialistSuggestionDtoWithOrderAndSpecialist);
+        return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
+    }
+    @PostMapping("/changeSpecialistSelectedOfOrder")
+    public ResponseEntity<SpecialistSelectionOfOrder> changeSpecialistSelectedOfOrder(@RequestBody @Valid SpecialistSelectionOfOrder specialistSelectionOfOrder  ) {
+        SpecialistSelectionOfOrder specialistSelectionOfOrderCandidate = specialistSuggestionService.changeSpecialistSelectedOfOrder(specialistSelectionOfOrder);
+        return new ResponseEntity<>(specialistSelectionOfOrderCandidate, HttpStatus.ACCEPTED);
+    }
+    @PostMapping("/changeStatusOrderToStarted")
+    public ResponseEntity<Boolean> changeStatusOrderToStarted(@RequestBody @Valid StatusOrderSpecialistSuggestionDto statusOrderSpecialistSuggestionDto  ) {
+        specialistSuggestionService.changeStatusOrderToStarted(statusOrderSpecialistSuggestionDto);
+        return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
+    }
+    @PostMapping("/changeStatusOrderToDone")
+    public ResponseEntity<Boolean> changeStatusOrderToDone(@RequestBody @Valid OrdersDto ordersDto) {
+        specialistSuggestionService.changeStatusOrderToDone(ordersDto);
+        return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
+    }
+    @PostMapping("/changeStatusOrderToWaitingForSpecialistToWorkplace")
+    public ResponseEntity<Boolean> changeStatusOrderToWaitingForSpecialistToWorkplace(@RequestBody @Valid  StatusOrderSpecialistSuggestionDtoWithOrderAndSpecialist  statusOrderSpecialistSuggestionDtoWithOrderAndSpecialist ) {
+        specialistSuggestionService.changeStatusOrderToWaitingForSpecialistToWorkplace(statusOrderSpecialistSuggestionDtoWithOrderAndSpecialist);
+        return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
     }
 }

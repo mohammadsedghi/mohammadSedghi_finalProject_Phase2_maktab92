@@ -16,9 +16,9 @@ import com.example.finalproject_phase2.repository.SpecialistSuggestionRepository
 import com.example.finalproject_phase2.service.OrdersService;
 import com.example.finalproject_phase2.service.SpecialistService;
 import com.example.finalproject_phase2.service.SpecialistSuggestionService;
-import com.example.finalproject_phase2.service.impl.mapper.CustomerMapper;
-import com.example.finalproject_phase2.service.impl.mapper.OrdersMapper;
-import com.example.finalproject_phase2.service.impl.mapper.SpecialistSuggestionMapper;
+import com.example.finalproject_phase2.mapper.CustomerMapper;
+import com.example.finalproject_phase2.mapper.OrdersMapper;
+import com.example.finalproject_phase2.mapper.SpecialistSuggestionMapper;
 import com.example.finalproject_phase2.util.CheckValidation;
 import com.example.finalproject_phase2.util.validation.CalenderAndValidation;
 import org.springframework.beans.factory.annotation.Autowired;

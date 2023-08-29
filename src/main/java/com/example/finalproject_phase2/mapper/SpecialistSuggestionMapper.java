@@ -1,4 +1,4 @@
-package com.example.finalproject_phase2.service.impl.mapper;
+package com.example.finalproject_phase2.mapper;
 
 import com.example.finalproject_phase2.dto.specialistSuggestionDto.SpecialistSuggestionDto;
 import com.example.finalproject_phase2.entity.SpecialistSuggestion;

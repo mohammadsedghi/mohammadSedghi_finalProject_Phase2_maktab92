@@ -1,4 +1,4 @@
-package com.example.finalproject_phase2.controller.security_config;
+package com.example.finalproject_phase2.security_config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

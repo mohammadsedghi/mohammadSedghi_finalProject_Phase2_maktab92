@@ -1,4 +1,4 @@
-package com.example.finalproject_phase2.service.impl.mapper;
+package com.example.finalproject_phase2.mapper;
 
 import com.example.finalproject_phase2.dto.addressDto.AddressDto;
 import com.example.finalproject_phase2.entity.Address;

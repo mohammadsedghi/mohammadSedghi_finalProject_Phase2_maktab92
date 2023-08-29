@@ -1,6 +1,5 @@
-package com.example.finalproject_phase2.controller.security_config;
+package com.example.finalproject_phase2.security_config;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,10 +9,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatcher;
-
-import static org.springframework.security.authorization.AuthorityAuthorizationManager.hasRole;
 
 @Configuration
 @EnableWebSecurity
@@ -44,8 +39,19 @@ public class SecurityConfiguration {
                            .requestMatchers("api/customer/findOrdersInStatusDone").hasAuthority("CUSTOMER")
                            .requestMatchers("api/customer/findOrdersInStatusPaid").hasAuthority("CUSTOMER")
                            .requestMatchers("api/customer/submitCustomerComments").hasAuthority("CUSTOMER")
-                           .requestMatchers("/api/v1/demo-controller/say")
-                           .hasAuthority("ADMIN").anyRequest().authenticated();
+                           .requestMatchers("api/customer/findCustomerOrderSuggestionOnScore").hasAuthority("CUSTOMER")
+                           .requestMatchers("api/customer/findCustomerOrderSuggestionOnPrice").hasAuthority("CUSTOMER")
+
+                           .requestMatchers("api/admin/register").hasAuthority("ADMIN")
+                           .requestMatchers("api/admin/authentication").hasAuthority("ADMIN")
+                           .requestMatchers("api/admin/register").hasAuthority("ADMIN")
+                           .requestMatchers("api/admin/duty/submit").hasAuthority("ADMIN")
+                           .requestMatchers("api/admin/duty/findAll").hasAuthority("ADMIN")
+                           .requestMatchers("api/admin/subDuty/addSubDuty").hasAuthority("ADMIN")
+                           .requestMatchers("api/admin/subDuty/editSubDutyPrice").hasAuthority("ADMIN")
+                           .requestMatchers("api/admin/subDuty/editSubDutyDescription").hasAuthority("ADMIN")
+                           .requestMatchers("api/admin/subDuty/findAll").hasAuthority("ADMIN")
+                           .requestMatchers("api/v1/demo-controller/say").hasAuthority("ADMIN").anyRequest().authenticated();
 
                    http.authenticationProvider(authenticationFilter)
         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

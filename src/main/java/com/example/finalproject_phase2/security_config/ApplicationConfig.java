@@ -1,7 +1,5 @@
-package com.example.finalproject_phase2.controller.security_config;
+package com.example.finalproject_phase2.security_config;
 
-import com.example.finalproject_phase2.entity.Customer;
-import com.example.finalproject_phase2.entity.Specialist;
 import com.example.finalproject_phase2.repository.AdminRepository;
 import com.example.finalproject_phase2.repository.CustomerRepository;
 import com.example.finalproject_phase2.repository.SpecialistRepository;

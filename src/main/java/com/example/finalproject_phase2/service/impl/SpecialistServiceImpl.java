@@ -11,7 +11,7 @@ import com.example.finalproject_phase2.entity.Wallet;
 import com.example.finalproject_phase2.repository.SpecialistRepository;
 import com.example.finalproject_phase2.service.SpecialistService;
 import com.example.finalproject_phase2.service.WalletService;
-import com.example.finalproject_phase2.service.impl.mapper.SpecialistMapper;
+import com.example.finalproject_phase2.mapper.SpecialistMapper;
 import com.example.finalproject_phase2.util.CheckValidation;
 import com.example.finalproject_phase2.util.hash_password.EncryptPassword;
 import com.example.finalproject_phase2.entity.enumeration.SpecialistRegisterStatus;

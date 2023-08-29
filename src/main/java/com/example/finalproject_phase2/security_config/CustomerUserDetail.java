@@ -1,6 +1,6 @@
-package com.example.finalproject_phase2.controller.security_config;
+package com.example.finalproject_phase2.security_config;
 
-import com.example.finalproject_phase2.entity.Specialist;
+import com.example.finalproject_phase2.entity.Customer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,26 +8,26 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-public class SpecialistUserDetail implements UserDetails {
-    private final Specialist specialist;
+public class CustomerUserDetail implements UserDetails {
+    private final Customer customer;
 
-    public SpecialistUserDetail(Specialist specialist) {
-        this.specialist = specialist;
+    public CustomerUserDetail(Customer customer) {
+        this.customer = customer;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("SPECIALIST"));
+        return List.of(new SimpleGrantedAuthority("CUSTOMER"));
     }
 
     @Override
     public String getPassword() {
-        return specialist.getPassword();
+        return customer.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return specialist.getEmail();
+        return customer.getEmail();
     }
 
     @Override
