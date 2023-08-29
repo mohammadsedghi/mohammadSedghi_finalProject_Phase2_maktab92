@@ -4,6 +4,7 @@ import com.example.finalproject_phase2.controller.security_config.Authentication
 import com.example.finalproject_phase2.custom_exception.CustomException;
 import com.example.finalproject_phase2.custom_exception.CustomNoResultException;
 import com.example.finalproject_phase2.dto.addressDto.AddressDto;
+import com.example.finalproject_phase2.dto.customerCommentsDto.CustomerCommentsDto;
 import com.example.finalproject_phase2.dto.customerDto.CustomerChangePasswordDto;
 import com.example.finalproject_phase2.dto.customerDto.CustomerDto;
 import com.example.finalproject_phase2.dto.customerDto.CustomerLoginDto;
@@ -11,11 +12,11 @@ import com.example.finalproject_phase2.dto.ordersDto.OrdersDto;
 import com.example.finalproject_phase2.dto.ordersDto.OrdersDtoWithCustomerAndSubDuty;
 import com.example.finalproject_phase2.dto.ordersDto.OrdersDtoWithOrdersStatus;
 import com.example.finalproject_phase2.dto.ordersDto.OrdersWithPriceAndBasePrice;
-import com.example.finalproject_phase2.dto.subDutyDto.SubDutyDto;
 import com.example.finalproject_phase2.entity.Address;
 import com.example.finalproject_phase2.entity.Customer;
 import com.example.finalproject_phase2.entity.Orders;
 import com.example.finalproject_phase2.service.AddressService;
+import com.example.finalproject_phase2.service.CustomerCommentsService;
 import com.example.finalproject_phase2.service.CustomerService;
 import com.example.finalproject_phase2.service.OrdersService;
 import com.example.finalproject_phase2.service.impl.mapper.AddressMapper;
@@ -35,17 +36,20 @@ import java.util.List;
 @RequestMapping("/api/customer")
 public class CustomerController {
     private final CustomerService customerService;
-    private final CustomerMapper customerMapper;
     private final AddressService addressService;
-    private final AddressMapper addressMapper;
+    private final CustomerCommentsService customerCommentsService;
     private final OrdersService ordersService;
+    private final AddressMapper addressMapper;
+    private final CustomerMapper customerMapper;
     private final OrdersMapper ordersMapper;
 
+
     @Autowired
-    public CustomerController(CustomerService customerService, CustomerMapper customerMapper, AddressService addressService, AddressMapper addressMapper, OrdersService ordersService, OrdersMapper ordersMapper) {
+    public CustomerController(CustomerService customerService, CustomerMapper customerMapper, AddressService addressService, CustomerCommentsService customerCommentsService, AddressMapper addressMapper, OrdersService ordersService, OrdersMapper ordersMapper) {
         this.customerService = customerService;
         this.customerMapper = customerMapper;
         this.addressService = addressService;
+        this.customerCommentsService = customerCommentsService;
         this.addressMapper = addressMapper;
         this.ordersService = ordersService;
         this.ordersMapper = ordersMapper;
@@ -181,6 +185,11 @@ public class CustomerController {
         Collection<Orders> ordersCollection = ordersService.findOrdersInStatusPaid(customerDto);
         Collection<OrdersDto> ordersDtoCollection = ordersMapper.collectionOrdersToCollectionOrdersDto(ordersCollection);
         return new ResponseEntity<>(ordersDtoCollection, HttpStatus.ACCEPTED);
+    }
+    @PostMapping("/submitCustomerComments")
+    public ResponseEntity<Boolean> submitCustomerComments(@RequestBody @Valid CustomerCommentsDto customerCommentsDto) {
+        customerCommentsService.submitCustomerCommentsService(customerCommentsDto);
+        return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
     }
 
 }

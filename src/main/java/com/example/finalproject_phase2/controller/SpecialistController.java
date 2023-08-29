@@ -9,9 +9,11 @@ import com.example.finalproject_phase2.dto.specialistDto.SpecialistScoreDto;
 import com.example.finalproject_phase2.dto.subDutyDto.SubDutyDto;
 import com.example.finalproject_phase2.entity.Orders;
 import com.example.finalproject_phase2.entity.Specialist;
+import com.example.finalproject_phase2.service.CustomerCommentsService;
 import com.example.finalproject_phase2.service.OrdersService;
 import com.example.finalproject_phase2.service.SpecialistService;
 import com.example.finalproject_phase2.service.impl.mapper.OrdersMapper;
+import com.example.finalproject_phase2.service.impl.mapper.SpecialistMapper;
 import com.example.finalproject_phase2.util.CheckValidation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,13 +31,19 @@ import java.util.List;
 @RequestMapping("/specialist")
 public class SpecialistController {
     private final SpecialistService specialistService;
+
     private final OrdersService ordersService;
+    private final CustomerCommentsService customerCommentsService;
     private final OrdersMapper ordersMapper;
+    private final SpecialistMapper specialistMapper;
+
     @Autowired
-    public SpecialistController(SpecialistService specialistService, OrdersService ordersService, OrdersMapper ordersMapper) {
+    public SpecialistController(SpecialistService specialistService, CustomerCommentsService customerCommentsService, OrdersService ordersService, OrdersMapper ordersMapper, SpecialistMapper specialistMapper) {
         this.specialistService = specialistService;
+        this.customerCommentsService = customerCommentsService;
         this.ordersService = ordersService;
         this.ordersMapper = ordersMapper;
+        this.specialistMapper = specialistMapper;
     }
     @PostMapping("/signUp")
     public ResponseEntity<SpecialistDto> addSpecialist(@RequestBody @Valid SpecialistDto specialistDto) {
@@ -85,5 +93,10 @@ public class SpecialistController {
         Collection<OrdersDto> ordersDtoCollection = ordersMapper.collectionOrdersToCollectionOrdersDto(ordersCollection);
         return new ResponseEntity<>(ordersDtoCollection, HttpStatus.ACCEPTED);
     }
-
+    @PostMapping("/showScore")
+    public ResponseEntity<Integer> showScore(@RequestBody @Valid SpecialistDto specialistDto ) {
+        Integer score = customerCommentsService.showScoreOfLastCustomerCommentsThatThisSpecialistIsExist(
+                specialistMapper.specialistDtoToSpecialist(specialistDto));
+        return new ResponseEntity<>(score, HttpStatus.ACCEPTED);
+    }
 }

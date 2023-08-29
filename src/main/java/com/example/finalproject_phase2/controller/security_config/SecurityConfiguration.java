@@ -43,6 +43,7 @@ public class SecurityConfiguration {
                            .requestMatchers("api/customer/findOrdersInStatusStarted").hasAuthority("CUSTOMER")
                            .requestMatchers("api/customer/findOrdersInStatusDone").hasAuthority("CUSTOMER")
                            .requestMatchers("api/customer/findOrdersInStatusPaid").hasAuthority("CUSTOMER")
+                           .requestMatchers("api/customer/submitCustomerComments").hasAuthority("CUSTOMER")
                            .requestMatchers("/api/v1/demo-controller/say")
                            .hasAuthority("ADMIN").anyRequest().authenticated();
 
