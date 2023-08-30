@@ -56,8 +56,7 @@ public class SpecialistController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody @Valid SpecialistDto specialistDto){
-        System.out.println(specialistMapper.specialistDtoToSpecialist(specialistDto).getEmail());
-        return  ResponseEntity.ok(specialistService.register(specialistMapper.specialistDtoToSpecialist(specialistDto)));
+        return  ResponseEntity.ok(specialistService.register(specialistDto));
     }
     @PostMapping("/authentication")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody SpecialistLoginDto specialistLoginDto
@@ -68,13 +67,13 @@ public class SpecialistController {
             return  ResponseEntity.ok(specialistService.authenticate(specialistLoginDto));
         }else  return new ResponseEntity<>(new AuthenticationResponse(), HttpStatus.BAD_REQUEST);
     }
-    @PostMapping("/signUp")
-    public ResponseEntity<SpecialistDto> addSpecialist(@RequestBody @Valid SpecialistDto specialistDto) {
-        System.out.println(specialistDto);
-        SpecialistDto specialistDtoCandidate = specialistService.addSpecialist(specialistDto);
-        if (specialistDtoCandidate!=null)return new ResponseEntity<>(specialistDtoCandidate, HttpStatus.ACCEPTED);
-        else throw new CustomException("specialist not saved");
-    }
+//    @PostMapping("/signUp")
+//    public ResponseEntity<SpecialistDto> addSpecialist(@RequestBody @Valid SpecialistDto specialistDto) {
+//        System.out.println(specialistDto);
+//        SpecialistDto specialistDtoCandidate = specialistService.addSpecialist(specialistDto);
+//        if (specialistDtoCandidate!=null)return new ResponseEntity<>(specialistDtoCandidate, HttpStatus.ACCEPTED);
+//        else throw new CustomException("specialist not saved");
+//    }
     @PostMapping("/login")
     public ResponseEntity<SpecialistDto> loginByEmailAndPassword(@RequestBody @Valid SpecialistLoginDto specialistLoginDto) {
         SpecialistDto specialistDto = specialistService.loginByEmailAndPassword(specialistLoginDto);

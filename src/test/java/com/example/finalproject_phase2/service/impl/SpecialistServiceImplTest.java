@@ -85,7 +85,7 @@ class SpecialistServiceImplTest {
         specialist.setPassword("123456al");
         specialist.setRegisterDate(LocalDate.now());
         specialist.setRegisterTime(LocalTime.now());
-        specialistService.addSpecialist(specialistMapper.specialistToSpecialistDto(specialist));
+        specialistService.register(specialistMapper.specialistToSpecialistDto(specialist));
         ConvertImageDto imageDto=new ConvertImageDto();
         imageDto.setSpecialist(specialist);
         imageDto.setFilePath("t.jpg");

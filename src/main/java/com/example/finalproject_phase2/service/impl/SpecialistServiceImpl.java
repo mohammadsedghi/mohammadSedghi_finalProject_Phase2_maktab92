@@ -56,9 +56,25 @@ public class SpecialistServiceImpl implements SpecialistService {
         this.customUserDetailsService = customUserDetailsService;
     }
     @Override
-    public AuthenticationResponse register(Specialist specialist){
-        specialist.setPassword(passwordEncoder.encode(specialist.getPassword()));
+    public AuthenticationResponse register(SpecialistDto specialistDto){
+        Specialist specialist = specialistMapper.specialistDtoToSpecialist(specialistDto);
+        try{
+            if (!checkValidation.isValid(specialistDto)) throw new CustomException("input  is invalid  ");
+            specialistRepository.findByEmail(specialistDto.getEmail()).ifPresentOrElse(
+                tempCustomer -> {
+                    throw new CustomException("Specialist with this email and password is exist ");
+                }, () -> {
+                    specialist.setPassword(passwordEncoder.encode(specialist.getPassword()));
+        Wallet wallet = walletService.createWallet();
+        specialist.setWallet(wallet);
+        specialist.setStatus(SpecialistRegisterStatus.WAITING_FOR_CONFIRM);
+        specialist.setRegisterDate(LocalDate.now());
+        specialist.setRegisterTime(LocalTime.now());
         specialistRepository.save(specialist);
+                });
+    } catch (CustomException c) {
+        return new AuthenticationResponse();
+    }
         specialistMapper.specialistToSpecialistDto(specialist);
         String jwtToken=jwtService.generateToken(customUserDetailsService.loadUserByUsername(specialist.getEmail()));
         return  AuthenticationResponse.builder()
@@ -79,31 +95,6 @@ public class SpecialistServiceImpl implements SpecialistService {
                 .token(jwtToken)
                 .build();
     }
-
-
-    @Override
-    public SpecialistDto addSpecialist(SpecialistDto specialistDto) {
-        try {
-            if (!checkValidation.isValid(specialistDto)) throw new CustomException("input  is invalid  ");
-            specialistRepository.findByEmail(specialistDto.getEmail()).ifPresentOrElse(
-                    tempCustomer -> {
-                        throw new CustomException("Specialist with this email and password is exist ");
-                    }, () -> {
-                        Wallet wallet = walletService.createWallet();
-                        specialistDto.setPassword(encryptSpecialistPassword(specialistDto.getPassword()));
-                        Specialist specialist = specialistMapper.specialistDtoToSpecialist(specialistDto);
-                       specialist.setWallet(wallet);
-                       specialist.setStatus(SpecialistRegisterStatus.WAITING_FOR_CONFIRM);
-                        specialist.setRegisterDate(LocalDate.now());
-                        specialist.setRegisterTime(LocalTime.now());
-                        specialistRepository.save(specialist);
-                    });
-        } catch (CustomException c) {
-            return new SpecialistDto();
-        }
-        return specialistDto;
-    }
-
     @Override
     public SpecialistDto loginByEmailAndPassword(SpecialistLoginDto specialistLoginDto) {
         try {

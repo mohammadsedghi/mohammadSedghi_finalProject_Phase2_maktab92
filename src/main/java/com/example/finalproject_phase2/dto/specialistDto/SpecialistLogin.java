@@ -8,7 +8,6 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SpecialistLogin extends PersonLogin {
     @Builder

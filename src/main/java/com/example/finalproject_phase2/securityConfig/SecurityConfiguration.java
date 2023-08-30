@@ -26,8 +26,8 @@ public class SecurityConfiguration {
                            .requestMatchers("api/admin/register").permitAll()
                            .requestMatchers("api/customer/authenticationCustomer").permitAll()
                            .requestMatchers("api/customer/registerCustomer").permitAll()
-                           .requestMatchers("api/specialist/signUp").permitAll()
-                           .requestMatchers("api/specialist/login").permitAll()
+                           .requestMatchers("api/specialist/register").permitAll()
+                           .requestMatchers("api/specialist/authentication").permitAll()
 
                            .requestMatchers("api/v1/auth/way").hasAuthority("CUSTOMER")
                            .requestMatchers("api/customer/changePassword").hasAuthority("CUSTOMER")

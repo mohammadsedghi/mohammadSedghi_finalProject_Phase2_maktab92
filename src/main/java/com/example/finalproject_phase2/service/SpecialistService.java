@@ -13,9 +13,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SpecialistService {
-     AuthenticationResponse register(Specialist specialist);
+     AuthenticationResponse register(SpecialistDto specialistDto);
     AuthenticationResponse authenticate(SpecialistLoginDto specialistLoginDto);
-    SpecialistDto addSpecialist(SpecialistDto specialistDto);
     SpecialistDto loginByEmailAndPassword(SpecialistLoginDto specialistLoginDto);
     SpecialistDto confirmSpecialistByAdmin(SpecialistDto specialistDto);
     Boolean addSpecialistToSubDuty(SpecialistSubDutyDto specialistSubDutyDto);
