@@ -20,13 +20,25 @@ import com.example.finalproject_phase2.service.*;
 import com.example.finalproject_phase2.mapper.AddressMapper;
 import com.example.finalproject_phase2.mapper.CustomerMapper;
 import com.example.finalproject_phase2.mapper.OrdersMapper;
+import com.example.finalproject_phase2.service.impl.CaptchaService;
 import com.example.finalproject_phase2.util.CheckValidation;
+import com.example.finalproject_phase2.util.CustomRegex;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
+import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -41,10 +53,15 @@ public class CustomerController {
     private final AddressMapper addressMapper;
     private final CustomerMapper customerMapper;
     private final OrdersMapper ordersMapper;
+    private String captchaText;
+    private LocalTime localTime;
+    private CustomRegex customRegex=new CustomRegex();
+    private final WalletService walletService;
+    CaptchaService captchaService=new CaptchaService();
 
 
     @Autowired
-    public CustomerController(CustomerService customerService, CustomerMapper customerMapper, AddressService addressService, CustomerCommentsService customerCommentsService, AddressMapper addressMapper, OrdersService ordersService, SpecialistSuggestionService specialistSuggestionService, OrdersMapper ordersMapper) {
+    public CustomerController(CustomerService customerService, CustomerMapper customerMapper, AddressService addressService, CustomerCommentsService customerCommentsService, AddressMapper addressMapper, OrdersService ordersService, SpecialistSuggestionService specialistSuggestionService, OrdersMapper ordersMapper, WalletService walletService) {
         this.customerService = customerService;
         this.customerMapper = customerMapper;
         this.addressService = addressService;
@@ -53,6 +70,7 @@ public class CustomerController {
         this.ordersService = ordersService;
         this.specialistSuggestionService = specialistSuggestionService;
         this.ordersMapper = ordersMapper;
+        this.walletService = walletService;
     }
 
     @PostMapping("/signUp")
@@ -200,5 +218,75 @@ public class CustomerController {
     public ResponseEntity<List<SpecialistSuggestionDto>> findCustomerOrderSuggestionOnPrice(@RequestBody @Valid CustomerDto CustomerDto ) {
         List<SpecialistSuggestionDto> customerOrderSuggestionOnPrice = specialistSuggestionService.findCustomerOrderSuggestionOnPrice(CustomerDto);
         return new ResponseEntity<>(customerOrderSuggestionOnPrice, HttpStatus.ACCEPTED);
+    }
+
+    @RequestMapping(value = "/payment", method = RequestMethod.GET)
+    public String payment() {
+        localTime=LocalTime.now();
+        return "index";
+    }
+
+    @PostMapping("/send-data")
+    @ResponseBody
+    public String sendData(@RequestParam String cardNumber1, @RequestParam String cardNumber2
+            , @RequestParam String cardNumber3, @RequestParam String cardNumber4, @RequestParam String cvv2,
+                           @RequestParam String month, @RequestParam String year,
+                           @RequestParam String captcha, @RequestParam String password,
+                           Model model) {
+        String response;
+        if (customRegex.checkOneInputIsValid(cardNumber1,customRegex.getValidDigitCardNumberPartOne())){
+            if (customRegex.checkOneInputIsValid(cardNumber2,customRegex.getValidCardNumber())){
+                if (customRegex.checkOneInputIsValid(cardNumber3,customRegex.getValidCardNumber())){
+                    if ( customRegex.checkOneInputIsValid(cardNumber4,customRegex.getValidCardNumber())){
+                        if (customRegex.checkOneInputIsValid(cvv2,customRegex.getValidCardNumber())){
+                            if (customRegex.checkOneInputIsValid(month,customRegex.getValidCardNumberMonth())){
+                                if (customRegex.checkOneInputIsValid(year,customRegex.getValidCardNumberYear())){
+                                    if (captchaText.equals(captcha)){
+                                        if (password.equals("1234")){
+                                            response="true";
+                                        }else response="password is incorrect";
+                                    }else response="captcha is incorrect";
+                                }else response="year of date is incorrect";
+                            }else response="month of date is incorrect";
+                        }else response="cvv2 is incorrect";
+                    }else response="cardNumber is incorrect";
+                }else response="cardNumber is incorrect";
+            }else response="cardNumber is incorrect";
+        }else response="cardNumber is incorrect";
+        if (LocalTime.now().getMinute()-localTime.getMinute()>=5){
+            response="false";
+        }
+        if (response.equals("true")){
+            walletService.payWithOnlinePayment(CheckValidation.memberTypespecialist,100d);
+        }
+        model.addAttribute("response", response);
+        return response;
+    }
+    @GetMapping("/after")
+    public String afterPage() {
+        return "afterPayment";
+    }
+    @GetMapping("/endTime")
+    public String anotherPage() {
+        return "endTime";
+    }
+
+    @GetMapping("/captcha")
+    public void captcha(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String captchaText = captchaService.generateCaptchaText(6); // 6 characters
+        this.captchaText=captchaText;
+        HttpSession session = request.getSession();
+        session.setAttribute("captcha", captchaText);
+        BufferedImage captchaImage =captchaService.generateCaptchaImage(captchaText);
+        response.setContentType(MimeTypeUtils.IMAGE_PNG_VALUE);
+        OutputStream out = response.getOutputStream();
+        ImageIO.write(captchaImage, "png", out);
+        out.close();
+    }
+
+
+    @PostMapping("/payWithWallet")
+    public ResponseEntity<String> payWithWallet(@RequestBody SpecialistSuggestionDto specialistSuggestionDto) {
+        return new ResponseEntity<>( walletService.payWithWallet(specialistSuggestionDto), HttpStatus.ACCEPTED);
     }
 }
