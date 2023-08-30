@@ -1,4 +1,4 @@
-package com.example.finalproject_phase2.security_config;
+package com.example.finalproject_phase2.securityConfig;
 
 import com.example.finalproject_phase2.entity.Customer;
 import org.springframework.security.core.GrantedAuthority;

@@ -1,6 +1,6 @@
 package com.example.finalproject_phase2.service;
 
-import com.example.finalproject_phase2.security_config.AuthenticationResponse;
+import com.example.finalproject_phase2.securityConfig.AuthenticationResponse;
 import com.example.finalproject_phase2.dto.adminDto.AdminDto;
 import com.example.finalproject_phase2.dto.adminDto.AdminLoginDto;
 import com.example.finalproject_phase2.entity.Admin;

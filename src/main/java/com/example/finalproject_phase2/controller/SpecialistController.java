@@ -33,7 +33,7 @@ import java.util.Collection;
 import java.util.List;
 
 @RestController
-@RequestMapping("/specialist")
+@RequestMapping("/api/specialist")
 public class SpecialistController {
     private final SpecialistService specialistService;
 
@@ -107,7 +107,7 @@ public class SpecialistController {
                 specialistMapper.specialistDtoToSpecialist(specialistDto));
         return new ResponseEntity<>(score, HttpStatus.ACCEPTED);
     }
-    @PostMapping("/submit")
+    @PostMapping("/submitSpecialSuggestion")
     public ResponseEntity<Boolean> IsValidSpecialSuggestion(@RequestBody @Valid ValidSpecialistSuggestionDto validSpecialistSuggestionDto) {
         specialistSuggestionService.IsValidSpecialSuggestion(validSpecialistSuggestionDto);
         return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
@@ -122,16 +122,7 @@ public class SpecialistController {
         SpecialistSelectionOfOrder specialistSelectionOfOrderCandidate = specialistSuggestionService.changeSpecialistSelectedOfOrder(specialistSelectionOfOrder);
         return new ResponseEntity<>(specialistSelectionOfOrderCandidate, HttpStatus.ACCEPTED);
     }
-    @PostMapping("/changeStatusOrderToStarted")
-    public ResponseEntity<Boolean> changeStatusOrderToStarted(@RequestBody @Valid StatusOrderSpecialistSuggestionDto statusOrderSpecialistSuggestionDto  ) {
-        specialistSuggestionService.changeStatusOrderToStarted(statusOrderSpecialistSuggestionDto);
-        return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
-    }
-    @PostMapping("/changeStatusOrderToDone")
-    public ResponseEntity<Boolean> changeStatusOrderToDone(@RequestBody @Valid OrdersDto ordersDto) {
-        specialistSuggestionService.changeStatusOrderToDone(ordersDto);
-        return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
-    }
+
     @PostMapping("/changeStatusOrderToWaitingForSpecialistToWorkplace")
     public ResponseEntity<Boolean> changeStatusOrderToWaitingForSpecialistToWorkplace(@RequestBody @Valid  StatusOrderSpecialistSuggestionDtoWithOrderAndSpecialist  statusOrderSpecialistSuggestionDtoWithOrderAndSpecialist ) {
         specialistSuggestionService.changeStatusOrderToWaitingForSpecialistToWorkplace(statusOrderSpecialistSuggestionDtoWithOrderAndSpecialist);

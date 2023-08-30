@@ -4,7 +4,7 @@ import com.example.finalproject_phase2.custom_exception.CustomNumberFormatExcept
 import com.example.finalproject_phase2.dto.subDutyDto.EditSubDutyDto;
 import com.example.finalproject_phase2.dto.subDutyDto.EditSubDutyDtoDescription;
 import com.example.finalproject_phase2.dto.subDutyDto.SubDutyDto;
-import com.example.finalproject_phase2.security_config.AuthenticationResponse;
+import com.example.finalproject_phase2.securityConfig.AuthenticationResponse;
 import com.example.finalproject_phase2.custom_exception.CustomException;
 import com.example.finalproject_phase2.dto.adminDto.AdminDto;
 import com.example.finalproject_phase2.dto.adminDto.AdminLoginDto;

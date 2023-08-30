@@ -1,8 +1,8 @@
 package com.example.finalproject_phase2.service.impl;
 
-import com.example.finalproject_phase2.security_config.AuthenticationResponse;
-import com.example.finalproject_phase2.security_config.CustomUserDetailsService;
-import com.example.finalproject_phase2.security_config.JwtService;
+import com.example.finalproject_phase2.securityConfig.AuthenticationResponse;
+import com.example.finalproject_phase2.securityConfig.CustomUserDetailsService;
+import com.example.finalproject_phase2.securityConfig.JwtService;
 import com.example.finalproject_phase2.custom_exception.CustomNoResultException;
 import com.example.finalproject_phase2.dto.adminDto.AdminDto;
 import com.example.finalproject_phase2.dto.adminDto.AdminLoginDto;

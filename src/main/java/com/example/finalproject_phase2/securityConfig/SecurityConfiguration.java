@@ -1,4 +1,4 @@
-package com.example.finalproject_phase2.security_config;
+package com.example.finalproject_phase2.securityConfig;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -35,12 +35,35 @@ public class SecurityConfiguration {
                            .requestMatchers("api/customer/findOrdersInStatusWaitingForSpecialistSuggestion").hasAuthority("CUSTOMER")
                            .requestMatchers("api/customer/findOrdersInStatusWaitingForSpecialistSelection").hasAuthority("CUSTOMER")
                            .requestMatchers("api/customer/findOrdersInStatusWaitingForSpecialistToWorkplace").hasAuthority("CUSTOMER")
-                           .requestMatchers("api/customer/findOrdersInStatusStarted").hasAuthority("CUSTOMER")
+                           .requestMatchers("api/customer/changeStatusOrderToStarted").hasAuthority("CUSTOMER")
+                           .requestMatchers("api/customer/changeStatusOrderToStarted").hasAuthority("CUSTOMER")
+                           .requestMatchers("api/customer/changeStatusOrderToDone").hasAuthority("CUSTOMER")
                            .requestMatchers("api/customer/findOrdersInStatusDone").hasAuthority("CUSTOMER")
                            .requestMatchers("api/customer/findOrdersInStatusPaid").hasAuthority("CUSTOMER")
                            .requestMatchers("api/customer/submitCustomerComments").hasAuthority("CUSTOMER")
                            .requestMatchers("api/customer/findCustomerOrderSuggestionOnScore").hasAuthority("CUSTOMER")
                            .requestMatchers("api/customer/findCustomerOrderSuggestionOnPrice").hasAuthority("CUSTOMER")
+                           .requestMatchers("api/customer/wallet/payment").hasAuthority("CUSTOMER")
+                           .requestMatchers("api/customer/wallet/send-data").hasAuthority("CUSTOMER")
+                           .requestMatchers("api/customer/wallet/after").hasAuthority("CUSTOMER")
+                           .requestMatchers("api/customer/wallet/endTime").hasAuthority("CUSTOMER")
+                           .requestMatchers("api/customer/wallet/captcha").hasAuthority("CUSTOMER")
+                           .requestMatchers("api/customer/wallet/payWithWallet").hasAuthority("CUSTOMER")
+                           .requestMatchers("api/customer/email/send").hasAuthority("CUSTOMER")
+
+                           .requestMatchers("api/specialist/signUp").hasAuthority("SPECIALIST")
+                           .requestMatchers("api/specialist/login").hasAuthority("SPECIALIST")
+                           .requestMatchers("api/specialist/confirmByAdmin").hasAuthority("SPECIALIST")
+                           .requestMatchers("api/specialist/updateScore").hasAuthority("SPECIALIST")
+                           .requestMatchers("api/specialist/showImage").hasAuthority("SPECIALIST")
+                           .requestMatchers("api/specialist/showImage").hasAuthority("SPECIALIST")
+                           .requestMatchers("api/specialist/search").hasAuthority("SPECIALIST")
+                           .requestMatchers("api/specialist/showOrdersToSpecialist").hasAuthority("SPECIALIST")
+                           .requestMatchers("api/specialist/showScore").hasAuthority("SPECIALIST")
+                           .requestMatchers("api/specialist/submitSpecialSuggestion").hasAuthority("SPECIALIST")
+                           .requestMatchers("api/specialist/findSuggestWithThisSpecialistAndOrder").hasAuthority("SPECIALIST")
+                           .requestMatchers("api/specialist/changeSpecialistSelectedOfOrder").hasAuthority("SPECIALIST")
+                           .requestMatchers("api/specialist/changeStatusOrderToWaitingForSpecialistToWorkplace").hasAuthority("SPECIALIST")
 
                            .requestMatchers("api/admin/register").hasAuthority("ADMIN")
                            .requestMatchers("api/admin/authentication").hasAuthority("ADMIN")

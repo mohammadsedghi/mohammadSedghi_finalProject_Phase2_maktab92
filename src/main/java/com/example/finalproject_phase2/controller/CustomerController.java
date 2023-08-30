@@ -1,8 +1,9 @@
 package com.example.finalproject_phase2.controller;
 
 import com.example.finalproject_phase2.dto.specialistSuggestionDto.SpecialistSuggestionDto;
+import com.example.finalproject_phase2.dto.specialistSuggestionDto.StatusOrderSpecialistSuggestionDto;
 import com.example.finalproject_phase2.entity.EmailRequest;
-import com.example.finalproject_phase2.security_config.AuthenticationResponse;
+import com.example.finalproject_phase2.securityConfig.AuthenticationResponse;
 import com.example.finalproject_phase2.custom_exception.CustomException;
 import com.example.finalproject_phase2.custom_exception.CustomNoResultException;
 import com.example.finalproject_phase2.dto.addressDto.AddressDto;
@@ -189,6 +190,16 @@ public class CustomerController {
         Collection<Orders> ordersCollection = ordersService.findOrdersInStatusWaitingForSpecialistToWorkplace(customerDto);
         Collection<OrdersDto> ordersDtoCollection = ordersMapper.collectionOrdersToCollectionOrdersDto(ordersCollection);
         return new ResponseEntity<>(ordersDtoCollection, HttpStatus.ACCEPTED);
+    }
+    @PostMapping("/changeStatusOrderToStarted")
+    public ResponseEntity<Boolean> changeStatusOrderToStarted(@RequestBody @Valid StatusOrderSpecialistSuggestionDto statusOrderSpecialistSuggestionDto  ) {
+        specialistSuggestionService.changeStatusOrderToStarted(statusOrderSpecialistSuggestionDto);
+        return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
+    }
+    @PostMapping("/changeStatusOrderToDone")
+    public ResponseEntity<Boolean> changeStatusOrderToDone(@RequestBody @Valid OrdersDto ordersDto) {
+        specialistSuggestionService.changeStatusOrderToDone(ordersDto);
+        return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
     }
     @PostMapping("/findOrdersInStatusStarted")
     public ResponseEntity<Collection<OrdersDto>> findOrdersInStatusStarted(@RequestBody @Valid CustomerDto customerDto ) {
