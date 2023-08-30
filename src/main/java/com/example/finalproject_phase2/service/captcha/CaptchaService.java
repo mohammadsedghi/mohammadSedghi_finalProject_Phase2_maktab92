@@ -1,4 +1,4 @@
-package com.example.finalproject_phase2.service.impl;
+package com.example.finalproject_phase2.service.captcha;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

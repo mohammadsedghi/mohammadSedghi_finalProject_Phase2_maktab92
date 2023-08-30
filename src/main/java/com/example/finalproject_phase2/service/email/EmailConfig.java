@@ -1,4 +1,4 @@
-package com.example.finalproject_phase2.controller;
+package com.example.finalproject_phase2.service.email;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.mail.javamail.JavaMailSender;

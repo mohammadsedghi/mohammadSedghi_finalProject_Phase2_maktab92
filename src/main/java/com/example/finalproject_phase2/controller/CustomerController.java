@@ -1,6 +1,7 @@
 package com.example.finalproject_phase2.controller;
 
 import com.example.finalproject_phase2.dto.specialistSuggestionDto.SpecialistSuggestionDto;
+import com.example.finalproject_phase2.entity.EmailRequest;
 import com.example.finalproject_phase2.security_config.AuthenticationResponse;
 import com.example.finalproject_phase2.custom_exception.CustomException;
 import com.example.finalproject_phase2.custom_exception.CustomNoResultException;
@@ -20,7 +21,8 @@ import com.example.finalproject_phase2.service.*;
 import com.example.finalproject_phase2.mapper.AddressMapper;
 import com.example.finalproject_phase2.mapper.CustomerMapper;
 import com.example.finalproject_phase2.mapper.OrdersMapper;
-import com.example.finalproject_phase2.service.impl.CaptchaService;
+import com.example.finalproject_phase2.service.captcha.CaptchaService;
+import com.example.finalproject_phase2.service.email.MailService;
 import com.example.finalproject_phase2.util.CheckValidation;
 import com.example.finalproject_phase2.util.CustomRegex;
 import jakarta.servlet.http.HttpServletRequest;
@@ -50,22 +52,24 @@ public class CustomerController {
     private final CustomerCommentsService customerCommentsService;
     private final OrdersService ordersService;
     private final SpecialistSuggestionService specialistSuggestionService;
+    private final MailService mailService;
+    private final WalletService walletService;
     private final AddressMapper addressMapper;
     private final CustomerMapper customerMapper;
     private final OrdersMapper ordersMapper;
     private String captchaText;
     private LocalTime localTime;
     private CustomRegex customRegex=new CustomRegex();
-    private final WalletService walletService;
     CaptchaService captchaService=new CaptchaService();
 
 
     @Autowired
-    public CustomerController(CustomerService customerService, CustomerMapper customerMapper, AddressService addressService, CustomerCommentsService customerCommentsService, AddressMapper addressMapper, OrdersService ordersService, SpecialistSuggestionService specialistSuggestionService, OrdersMapper ordersMapper, WalletService walletService) {
+    public CustomerController(CustomerService customerService, CustomerMapper customerMapper, AddressService addressService, CustomerCommentsService customerCommentsService, MailService mailService, AddressMapper addressMapper, OrdersService ordersService, SpecialistSuggestionService specialistSuggestionService, OrdersMapper ordersMapper, WalletService walletService) {
         this.customerService = customerService;
         this.customerMapper = customerMapper;
         this.addressService = addressService;
         this.customerCommentsService = customerCommentsService;
+        this.mailService = mailService;
         this.addressMapper = addressMapper;
         this.ordersService = ordersService;
         this.specialistSuggestionService = specialistSuggestionService;
@@ -288,5 +292,10 @@ public class CustomerController {
     @PostMapping("/payWithWallet")
     public ResponseEntity<String> payWithWallet(@RequestBody SpecialistSuggestionDto specialistSuggestionDto) {
         return new ResponseEntity<>( walletService.payWithWallet(specialistSuggestionDto), HttpStatus.ACCEPTED);
+    }
+    @PostMapping("/send")
+    public String sendEmail(@RequestBody EmailRequest emailRequest) {
+        mailService.sendEmail(emailRequest.getTo(), emailRequest.getSubject(), emailRequest.getText());
+        return "Email sent successfully!";
     }
 }

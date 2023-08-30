@@ -1,4 +1,4 @@
-package com.example.finalproject_phase2.service.impl;
+package com.example.finalproject_phase2.service.email;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
