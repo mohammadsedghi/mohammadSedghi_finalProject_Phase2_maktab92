@@ -3,12 +3,13 @@ package com.example.finalproject_phase2.service.impl;
 import com.example.finalproject_phase2.custom_exception.CustomException;
 import com.example.finalproject_phase2.custom_exception.CustomInputOutputException;
 import com.example.finalproject_phase2.custom_exception.CustomNoResultException;
+import com.example.finalproject_phase2.dto.adminDto.AdminLoginDto;
 import com.example.finalproject_phase2.dto.specialistDto.*;
-import com.example.finalproject_phase2.entity.Customer;
-import com.example.finalproject_phase2.entity.Specialist;
-import com.example.finalproject_phase2.entity.SubDuty;
-import com.example.finalproject_phase2.entity.Wallet;
+import com.example.finalproject_phase2.entity.*;
 import com.example.finalproject_phase2.repository.SpecialistRepository;
+import com.example.finalproject_phase2.securityConfig.AuthenticationResponse;
+import com.example.finalproject_phase2.securityConfig.CustomUserDetailsService;
+import com.example.finalproject_phase2.securityConfig.JwtService;
 import com.example.finalproject_phase2.service.SpecialistService;
 import com.example.finalproject_phase2.service.WalletService;
 import com.example.finalproject_phase2.mapper.SpecialistMapper;
@@ -18,6 +19,9 @@ import com.example.finalproject_phase2.entity.enumeration.SpecialistRegisterStat
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -35,14 +39,47 @@ public class SpecialistServiceImpl implements SpecialistService {
     private final SpecialistMapper specialistMapper;
     private final WalletService walletService;
     CheckValidation checkValidation = new CheckValidation();
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Autowired
-    public SpecialistServiceImpl(SpecialistRepository specialistRepository, SpecialistMapper specialistMapper, WalletService walletService) {
+    public SpecialistServiceImpl(SpecialistRepository specialistRepository, SpecialistMapper specialistMapper, WalletService walletService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtService jwtService, CustomUserDetailsService customUserDetailsService) {
         this.specialistRepository = specialistRepository;
         this.specialistMapper = specialistMapper;
 
         this.walletService = walletService;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
+        this.customUserDetailsService = customUserDetailsService;
     }
+    @Override
+    public AuthenticationResponse register(Specialist specialist){
+        specialist.setPassword(passwordEncoder.encode(specialist.getPassword()));
+        specialistRepository.save(specialist);
+        specialistMapper.specialistToSpecialistDto(specialist);
+        String jwtToken=jwtService.generateToken(customUserDetailsService.loadUserByUsername(specialist.getEmail()));
+        return  AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
+    }
+    @Override
+    public AuthenticationResponse authenticate(SpecialistLoginDto specialistLoginDto){
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                      specialistMapper.specialistLoginDtoToSpecialistLogin(specialistLoginDto)
+                              .getEmail(),specialistMapper.specialistLoginDtoToSpecialistLogin(specialistLoginDto).getPassword()
+                )
+        );
+        Specialist specialist=specialistRepository.findByEmail(specialistMapper.specialistLoginDtoToSpecialistLogin(specialistLoginDto).getEmail()).orElseThrow();
+        String jwtToken=jwtService.generateToken(customUserDetailsService.loadUserByUsername(specialist.getEmail()));
+        return  AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
+    }
+
 
     @Override
     public SpecialistDto addSpecialist(SpecialistDto specialistDto) {

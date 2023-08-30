@@ -71,7 +71,7 @@ public class AdminServiceImpl implements AdminService {
     public Optional<Admin> findByEmail(String email){
         return adminRepository.findByEmail(email);
     }
-
+@Override
     public AuthenticationResponse register(Admin admin){
         admin.setPassword(passwordEncoder.encode(admin.getPassword()));
       adminRepository.save(admin);
@@ -81,6 +81,7 @@ public class AdminServiceImpl implements AdminService {
               .token(jwtToken)
               .build();
     }
+    @Override
     public AuthenticationResponse authenticate(AdminLoginDto  adminLoginDto){
   authenticationManager.authenticate(
           new UsernamePasswordAuthenticationToken(

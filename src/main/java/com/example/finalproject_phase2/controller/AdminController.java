@@ -49,17 +49,10 @@ public class AdminController {
     this.subDutyMapper = subDutyMapper;
 }
 
-    @PostMapping("/login2")
-    public ResponseEntity<AdminDto> loginByEmailAndPassword(@RequestBody @Valid AdminLoginDto adminLoginDto) {
-        AdminDto adminDto = adminService.loginByEmailAndPassword(adminLoginDto);
-        if (adminDto!=null){
-            return new ResponseEntity<>(adminDto, HttpStatus.ACCEPTED);
-        }else  throw new CustomException("customer not saved");
-    }
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody Admin admin){
-        System.out.println(admin.getEmail());
-        return  ResponseEntity.ok(adminService.register(admin));
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody @Valid AdminDto adminDto){
+        System.out.println(adminMapper.adminDtoToAdmin(adminDto).getEmail());
+        return  ResponseEntity.ok(adminService.register(adminMapper.adminDtoToAdmin(adminDto)));
     }
     @PostMapping("/authentication")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody AdminLoginDto adminLoginDto
@@ -70,13 +63,13 @@ public class AdminController {
             return  ResponseEntity.ok(adminService.authenticate(adminLoginDto));
         }else  return new ResponseEntity<>(new AuthenticationResponse(), HttpStatus.BAD_REQUEST);
     }
-    @PostMapping("/submit")
+    @PostMapping("/duty/submit")
     public ResponseEntity<DutyDto> addDuty(@RequestBody DutyDto dutyDto) {
         DutyDto dutyDtoGenerated = dutyService.addDuty(dutyDto);
         if (dutyDtoGenerated!=null)return new ResponseEntity<>(dutyDtoGenerated, HttpStatus.ACCEPTED);
         else throw new CustomException("duty not saved");
     }
-    @GetMapping("/findAll")
+    @GetMapping("/duty/findAll")
     public Set<DutyDto> getAllDuty() {
         return dutyService.findAllByDuties();
     }
@@ -98,7 +91,7 @@ public class AdminController {
         if (subDutyDto!=null)return new ResponseEntity<>(subDutyDto, HttpStatus.ACCEPTED);
         else throw  new CustomNumberFormatException("invalid price");
     }
-    @GetMapping("/findAll")
+    @GetMapping("/findAllSubDuty")
     public Set<SubDutyDto> getAllSubDuty(DutyDto dutyDto) {
         return subDutyMapper.collectionOfSubDutyToSetOfSubDutyDto(subDutyService.showAllSubDutyOfDuty(dutyDto));
     }

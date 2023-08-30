@@ -2,14 +2,19 @@ package com.example.finalproject_phase2.service;
 
 import com.example.finalproject_phase2.custom_exception.CustomInputOutputException;
 import com.example.finalproject_phase2.dto.ProjectResponse;
+import com.example.finalproject_phase2.dto.adminDto.AdminLoginDto;
 import com.example.finalproject_phase2.dto.specialistDto.*;
+import com.example.finalproject_phase2.entity.Admin;
 import com.example.finalproject_phase2.entity.Specialist;
 import com.example.finalproject_phase2.entity.SubDuty;
+import com.example.finalproject_phase2.securityConfig.AuthenticationResponse;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface SpecialistService {
+     AuthenticationResponse register(Specialist specialist);
+    AuthenticationResponse authenticate(SpecialistLoginDto specialistLoginDto);
     SpecialistDto addSpecialist(SpecialistDto specialistDto);
     SpecialistDto loginByEmailAndPassword(SpecialistLoginDto specialistLoginDto);
     SpecialistDto confirmSpecialistByAdmin(SpecialistDto specialistDto);

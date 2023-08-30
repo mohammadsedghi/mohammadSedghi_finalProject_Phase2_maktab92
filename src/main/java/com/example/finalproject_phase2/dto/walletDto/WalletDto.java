@@ -1,4 +1,4 @@
-package com.example.finalproject_phase2.dto;
+package com.example.finalproject_phase2.dto.walletDto;
 
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotNull;

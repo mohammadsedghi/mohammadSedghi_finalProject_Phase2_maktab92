@@ -1,6 +1,8 @@
 package com.example.finalproject_phase2.controller;
 
 import com.example.finalproject_phase2.custom_exception.CustomException;
+import com.example.finalproject_phase2.dto.adminDto.AdminDto;
+import com.example.finalproject_phase2.dto.adminDto.AdminLoginDto;
 import com.example.finalproject_phase2.dto.ordersDto.OrdersDto;
 import com.example.finalproject_phase2.dto.specialistDto.ConvertImageDto;
 import com.example.finalproject_phase2.dto.specialistDto.SpecialistDto;
@@ -13,6 +15,7 @@ import com.example.finalproject_phase2.dto.subDutyDto.SubDutyDto;
 import com.example.finalproject_phase2.entity.Orders;
 import com.example.finalproject_phase2.entity.Specialist;
 import com.example.finalproject_phase2.entity.enumeration.SpecialistSelectionOfOrder;
+import com.example.finalproject_phase2.securityConfig.AuthenticationResponse;
 import com.example.finalproject_phase2.service.CustomerCommentsService;
 import com.example.finalproject_phase2.service.OrdersService;
 import com.example.finalproject_phase2.service.SpecialistService;
@@ -24,10 +27,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -52,6 +52,21 @@ public class SpecialistController {
         this.specialistSuggestionService = specialistSuggestionService;
         this.ordersMapper = ordersMapper;
         this.specialistMapper = specialistMapper;
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody @Valid SpecialistDto specialistDto){
+        System.out.println(specialistMapper.specialistDtoToSpecialist(specialistDto).getEmail());
+        return  ResponseEntity.ok(specialistService.register(specialistMapper.specialistDtoToSpecialist(specialistDto)));
+    }
+    @PostMapping("/authentication")
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody SpecialistLoginDto specialistLoginDto
+            , @RequestParam String userType){
+        CheckValidation.userType=userType;
+        System.out.println(userType);
+        if (userType.equals("specialist")){
+            return  ResponseEntity.ok(specialistService.authenticate(specialistLoginDto));
+        }else  return new ResponseEntity<>(new AuthenticationResponse(), HttpStatus.BAD_REQUEST);
     }
     @PostMapping("/signUp")
     public ResponseEntity<SpecialistDto> addSpecialist(@RequestBody @Valid SpecialistDto specialistDto) {

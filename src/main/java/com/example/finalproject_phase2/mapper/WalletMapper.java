@@ -1,6 +1,6 @@
 package com.example.finalproject_phase2.mapper;
 
-import com.example.finalproject_phase2.dto.WalletDto;
+import com.example.finalproject_phase2.dto.walletDto.WalletDto;
 import com.example.finalproject_phase2.entity.Wallet;
 import org.mapstruct.Mapper;
 

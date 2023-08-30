@@ -22,9 +22,13 @@ public class SecurityConfiguration {
 //        http.cors(AbstractHttpConfigurer::disable);
          http.authorizeHttpRequests(
                authorizeRequests -> {
-                   authorizeRequests.requestMatchers("api/v1/auth/authentication").permitAll()
+                   authorizeRequests.requestMatchers("api/admin/authentication").permitAll()
+                           .requestMatchers("api/admin/register").permitAll()
                            .requestMatchers("api/customer/authenticationCustomer").permitAll()
                            .requestMatchers("api/customer/registerCustomer").permitAll()
+                           .requestMatchers("api/specialist/signUp").permitAll()
+                           .requestMatchers("api/specialist/login").permitAll()
+
                            .requestMatchers("api/v1/auth/way").hasAuthority("CUSTOMER")
                            .requestMatchers("api/customer/changePassword").hasAuthority("CUSTOMER")
                            .requestMatchers("api/customer/deleteAddress").hasAuthority("CUSTOMER")
@@ -51,8 +55,7 @@ public class SecurityConfiguration {
                            .requestMatchers("api/customer/wallet/payWithWallet").hasAuthority("CUSTOMER")
                            .requestMatchers("api/customer/email/send").hasAuthority("CUSTOMER")
 
-                           .requestMatchers("api/specialist/signUp").hasAuthority("SPECIALIST")
-                           .requestMatchers("api/specialist/login").hasAuthority("SPECIALIST")
+
                            .requestMatchers("api/specialist/confirmByAdmin").hasAuthority("SPECIALIST")
                            .requestMatchers("api/specialist/updateScore").hasAuthority("SPECIALIST")
                            .requestMatchers("api/specialist/showImage").hasAuthority("SPECIALIST")
@@ -65,9 +68,7 @@ public class SecurityConfiguration {
                            .requestMatchers("api/specialist/changeSpecialistSelectedOfOrder").hasAuthority("SPECIALIST")
                            .requestMatchers("api/specialist/changeStatusOrderToWaitingForSpecialistToWorkplace").hasAuthority("SPECIALIST")
 
-                           .requestMatchers("api/admin/register").hasAuthority("ADMIN")
-                           .requestMatchers("api/admin/authentication").hasAuthority("ADMIN")
-                           .requestMatchers("api/admin/register").hasAuthority("ADMIN")
+
                            .requestMatchers("api/admin/duty/submit").hasAuthority("ADMIN")
                            .requestMatchers("api/admin/duty/findAll").hasAuthority("ADMIN")
                            .requestMatchers("api/admin/subDuty/addSubDuty").hasAuthority("ADMIN")
@@ -80,8 +81,6 @@ public class SecurityConfiguration {
         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
                });
-//       ).httpBasic(basic -> {
-//       });
         return http.build();
     }
 
